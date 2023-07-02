@@ -14,18 +14,19 @@ datasource db {
 
 //Product Models
 model Product {
-    id            String      @id @default(cuid())
-    createdAt     DateTime    @default(now())
-    updatedAt     DateTime    @updatedAt
-    name          String
-    price         Decimal
-    stockQuantity Int
-    image         String
-    category      Category    @relation(fields: [categoryId], references: [id])
-    categoryId    String
-    Order         Order?      @relation(fields: [orderId], references: [id])
-    orderId       String?
-    OrderItem     OrderItem[]
+    id          String      @id @default(cuid())
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    name        String
+    price       Decimal
+    stock       Int
+    description String      @db.VarChar(50)
+    image       String
+    category    Category    @relation(fields: [categoryId], references: [id])
+    categoryId  String
+    Order       Order?      @relation(fields: [orderId], references: [id])
+    orderId     String?
+    OrderItem   OrderItem[]
 
     @@index([categoryId], name: "categoryId")
     @@index([orderId], name: "orderId")
