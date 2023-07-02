@@ -12,18 +12,20 @@ datasource db {
     relationMode = "prisma"
 }
 
+//Product Models
 model Product {
-    id            String   @id @default(cuid())
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+    id            String      @id @default(cuid())
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
     name          String
     price         Decimal
     stockQuantity Int
     image         String
-    category      Category @relation(fields: [categoryId], references: [id])
+    category      Category    @relation(fields: [categoryId], references: [id])
     categoryId    String
-    Order         Order?   @relation(fields: [orderId], references: [id])
+    Order         Order?      @relation(fields: [orderId], references: [id])
     orderId       String?
+    OrderItem     OrderItem[]
 
     @@index([categoryId], name: "categoryId")
     @@index([orderId], name: "orderId")
@@ -37,31 +39,49 @@ model Category {
     products  Product[]
 }
 
+//Order Models
 model Order {
-    id                String    @id @default(cuid())
-    createdAt         DateTime  @default(now())
-    updatedAt         DateTime  @updatedAt
-    status            String
+    id                String      @id @default(cuid())
+    createdAt         DateTime    @default(now())
+    updatedAt         DateTime    @updatedAt
+    status            String      @default("PENDING")
     total             Decimal
-    products          Product[]
-    customer          Customer  @relation(fields: [customerId], references: [id])
+    OrderItem         OrderItem[]
+    customer          Customer    @relation(fields: [customerId], references: [id])
     trackingNumber    String
     trackingCompany   String
     shippingAddressId String
     customerId        String
     // paymentIntentId   String if implemented with stripe
     paymentMethod     String
+    Product           Product[]
 
     @@index([customerId], name: "customerId")
 }
 
+model OrderItem {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    quantity  Int
+    price     Decimal
+    order     Order    @relation(fields: [orderId], references: [id])
+    product   Product  @relation(fields: [productId], references: [id])
+    orderId   String
+    productId String
+
+    @@index([orderId], name: "orderId")
+    @@index([productId], name: "productId")
+}
+
+//Customer Models
 model Customer {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    firstName String
-    lastName  String
-    email     String
-    phone     String
+    firstName String   @db.VarChar(50)
+    lastName  String   @db.VarChar(50)
+    email     String   @unique
+    phone     String   @db.VarChar(20)
     orders    Order[]
 }
