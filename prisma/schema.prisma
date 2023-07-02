@@ -24,12 +24,8 @@ model Product {
     image       String
     category    Category    @relation(fields: [categoryId], references: [id])
     categoryId  String
-    Order       Order?      @relation(fields: [orderId], references: [id])
-    orderId     String?
-    OrderItem   OrderItem[]
 
     @@index([categoryId], name: "categoryId")
-    @@index([orderId], name: "orderId")
 }
 
 model Category {
@@ -55,7 +51,6 @@ model Order {
     customerId        String
     // paymentIntentId   String if implemented with stripe
     paymentMethod     String
-    Product           Product[]
 
     @@index([customerId], name: "customerId")
 }
@@ -67,7 +62,6 @@ model OrderItem {
     quantity  Int
     price     Decimal
     order     Order    @relation(fields: [orderId], references: [id])
-    product   Product  @relation(fields: [productId], references: [id])
     orderId   String
     productId String
 
