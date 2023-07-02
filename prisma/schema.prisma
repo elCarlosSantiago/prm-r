@@ -12,8 +12,56 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Example {
+model Product {
+    id            String   @id @default(cuid())
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+    name          String
+    price         Decimal
+    stockQuantity Int
+    image         String
+    category      Category @relation(fields: [categoryId], references: [id])
+    categoryId    String
+    Order         Order?   @relation(fields: [orderId], references: [id])
+    orderId       String?
+
+    @@index([categoryId], name: "categoryId")
+    @@index([orderId], name: "orderId")
+}
+
+model Category {
+    id        String    @id @default(cuid())
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    name      String
+    products  Product[]
+}
+
+model Order {
+    id                String    @id @default(cuid())
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+    status            String
+    total             Decimal
+    products          Product[]
+    customer          Customer  @relation(fields: [customerId], references: [id])
+    trackingNumber    String
+    trackingCompany   String
+    shippingAddressId String
+    customerId        String
+    // paymentIntentId   String if implemented with stripe
+    paymentMethod     String
+
+    @@index([customerId], name: "customerId")
+}
+
+model Customer {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    firstName String
+    lastName  String
+    email     String
+    phone     String
+    orders    Order[]
 }
