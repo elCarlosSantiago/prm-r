@@ -1,7 +1,6 @@
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc"
-import { productSchema } from "~/schemas/product.schema"
-import { notFound } from "~/utils/errors"
-import { idSchema } from "~/schemas/id.schema"
+import { notFound } from "~/utils"
+import { idSchema, productSchema } from "~/schemas"
 
 export const productsRouter = createTRPCRouter({
   getAll: privateProcedure.query(({ ctx }) => {
