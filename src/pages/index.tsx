@@ -37,7 +37,7 @@ const Product: React.FC<{ product: Product }> = ({ product }) => {
 
 export default function Home() {
   const { data, isLoading } = api.products.getAll.useQuery()
-  if (!isLoading && !data) return <div>No data</div>
+  const { isSignedIn } = useUser()
   return (
     <React.Fragment>
       <Head>
@@ -48,7 +48,11 @@ export default function Home() {
       <main className="flex h-screen justify-center">
         <div className="w-full border-x border-slate-200 md:max-w-4xl">
           <NavBar />
-          {isLoading ? (
+          {!isSignedIn ? (
+            <div className="flex h-full items-center justify-center">
+              Please sign in to view your products.
+            </div>
+          ) : isLoading ? (
             <LoadingPage />
           ) : (
             <div>

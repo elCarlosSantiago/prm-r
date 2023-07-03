@@ -2,12 +2,12 @@ import { z } from "zod"
 
 import {
   createTRPCRouter,
-  // privateProcedure,
+  privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc"
 
 export const productsRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: privateProcedure.query(({ ctx }) => {
     return ctx.prisma.product.findMany()
   }),
 })
