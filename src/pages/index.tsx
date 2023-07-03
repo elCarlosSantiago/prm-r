@@ -24,7 +24,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-screen justify-center">
-        <div className="w-full border-x border-slate-200 md:max-w-4xl">
+        <div className="w-full border-x border-slate-200 ">
           <NavBar />
           {!isSignedIn ? (
             <div className="flex h-full items-center justify-center">
