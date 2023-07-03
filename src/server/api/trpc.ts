@@ -14,9 +14,17 @@
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
-import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next"
 
-import { prisma } from '~/server/db'
+import { prisma } from "~/server/db"
+import { type inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server"
+import superjson from "superjson"
+import {
+  getAuth,
+  type SignedInAuthObject,
+  type SignedOutAuthObject,
+} from "@clerk/nextjs/server"
+import { ZodError } from "zod"
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -24,29 +32,31 @@ import { prisma } from '~/server/db'
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (opts: CreateNextContextOptions) => {
-  const { req } = opts
-  const sesh = getAuth(req)
 
-  const userId = sesh.userId
+interface AuthContext {
+  auth: SignedInAuthObject | SignedOutAuthObject
+}
 
+const createInnerTRPCContext = ({ auth }: AuthContext) => {
   return {
+    auth,
     prisma,
-    userId,
   }
 }
+
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+  //AUTH PATH IS BROKEN - getAuth is not working
+  return createInnerTRPCContext({ auth: getAuth(opts.req) })
+}
+export type Context = inferAsyncReturnType<typeof createTRPCContext>
 
 /**
  * 2. INITIALIZATION
  *
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
-import { initTRPC, TRPCError } from '@trpc/server'
-import superjson from 'superjson'
-import { getAuth } from '@clerk/nextjs/server'
-import { ZodError } from 'zod'
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -83,16 +93,16 @@ export const createTRPCRouter = t.router
  */
 export const publicProcedure = t.procedure
 
-const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.userId) {
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.auth.userId) {
     throw new TRPCError({
-      code: 'UNAUTHORIZED',
+      code: "UNAUTHORIZED",
     })
   }
 
   return next({
     ctx: {
-      userId: ctx.userId,
+      auth: ctx.auth,
     },
   })
 })
