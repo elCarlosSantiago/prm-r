@@ -1,34 +1,10 @@
-import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import Head from "next/head"
-import Image from "next/image"
 import React from "react"
 import { LoadingPage } from "~/components/Loading"
+import { NavBar } from "~/components/NavBar"
 import { type RouterOutputs, api } from "~/utils/api"
 
-export const NavBar: React.FC = () => {
-  const { user, isSignedIn, isLoaded } = useUser()
-  if (!isLoaded) return <LoadingPage />
-  return (
-    <div className="flex justify-between gap-8 border-b border-slate-400 px-8 py-4">
-      {!!user && (
-        <div className="flex items-center gap-8">
-          <Image
-            src={user?.profileImageUrl}
-            width={32}
-            height={32}
-            quality={100}
-            alt="user-image"
-            className="h-24 w-24 rounded-full"
-          />
-          <div className="">
-            Welcome back, <span className="font-bold">{user.fullName}</span>
-          </div>
-        </div>
-      )}
-      {isSignedIn ? <SignOutButton /> : <SignInButton />}
-    </div>
-  )
-}
 type Product = RouterOutputs["products"]["getAll"][number]
 
 const Product: React.FC<{ product: Product }> = ({ product }) => {
