@@ -1,20 +1,11 @@
 import { useUser } from "@clerk/nextjs"
 import Head from "next/head"
 import React from "react"
-import { NavBar, LoadingPage } from "~/components"
-import { type RouterOutputs, api } from "~/utils/api"
-
-type Product = RouterOutputs["products"]["getAll"][number]
-
-const Product: React.FC<{ product: Product }> = ({ product }) => {
-  return <div className="border-b border-slate-400 p-8">{product.name}</div>
-}
+import { NavBar } from "~/components"
+import { ProductPage } from "~/templates"
 
 export default function Home() {
-  const { data, isLoading } = api.products.getAll.useQuery()
   const { isSignedIn } = useUser()
-
-  if (isLoading) return <LoadingPage />
 
   return (
     <React.Fragment>
@@ -28,14 +19,10 @@ export default function Home() {
           <NavBar />
           {!isSignedIn ? (
             <div className="flex h-full items-center justify-center">
-              Please sign in to view your products.
+              Please sign in to view the product management system.
             </div>
           ) : (
-            <div>
-              {data?.map((product) => (
-                <Product key={product.id} product={product} />
-              ))}
-            </div>
+            <ProductPage />
           )}
         </div>
       </main>
