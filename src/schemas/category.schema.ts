@@ -2,7 +2,7 @@ import { z } from "zod"
 import { productSchema } from "./product.schema"
 
 export const categorySchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   products: productSchema.array(),
 })
