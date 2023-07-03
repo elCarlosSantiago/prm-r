@@ -1,8 +1,7 @@
 import { useUser } from "@clerk/nextjs"
 import Head from "next/head"
 import React from "react"
-import { LoadingPage } from "~/components/Loading"
-import { NavBar } from "~/components/NavBar"
+import { NavBar, LoadingPage } from "~/components"
 import { type RouterOutputs, api } from "~/utils/api"
 
 type Product = RouterOutputs["products"]["getAll"][number]

@@ -1,5 +1,6 @@
 import Image from "next/image"
-import { SignInButton, SignOutButton } from "@clerk/nextjs"
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs"
+import { LoadingPage } from "./Loading"
 
 export const NavBar: React.FC = () => {
   const { user, isSignedIn, isLoaded } = useUser()
