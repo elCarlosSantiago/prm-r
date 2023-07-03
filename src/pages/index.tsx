@@ -13,6 +13,9 @@ const Product: React.FC<{ product: Product }> = ({ product }) => {
 export default function Home() {
   const { data, isLoading } = api.products.getAll.useQuery()
   const { isSignedIn } = useUser()
+
+  if (isLoading) return <LoadingPage />
+
   return (
     <React.Fragment>
       <Head>
@@ -27,8 +30,6 @@ export default function Home() {
             <div className="flex h-full items-center justify-center">
               Please sign in to view your products.
             </div>
-          ) : isLoading ? (
-            <LoadingPage />
           ) : (
             <div>
               {data?.map((product) => (
