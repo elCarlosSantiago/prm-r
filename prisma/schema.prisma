@@ -5,15 +5,76 @@ generator client {
 }
 
 datasource db {
-    //for purposes of the project we will only be using one database for prod/stage/dev
-    // In reality we would setup a database for each environment
     provider     = "mysql"
     url          = env("DATABASE_URL")
     relationMode = "prisma"
 }
 
-model Example {
+//Product Models
+model Product {
+    id          String      @id @default(cuid())
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    name        String
+    price       Decimal
+    stock       Int
+    description String      @db.VarChar(50)
+    image       String
+    category    Category    @relation(fields: [categoryId], references: [id])
+    categoryId  String
+
+    @@index([categoryId], name: "categoryId")
+}
+
+model Category {
+    id        String    @id @default(cuid())
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    name      String
+    products  Product[]
+}
+
+//Order Models
+model Order {
+    id                String      @id @default(cuid())
+    createdAt         DateTime    @default(now())
+    updatedAt         DateTime    @updatedAt
+    status            String      @default("PENDING")
+    total             Decimal
+    OrderItem         OrderItem[]
+    customer          Customer    @relation(fields: [customerId], references: [id])
+    trackingNumber    String
+    trackingCompany   String
+    shippingAddressId String
+    customerId        String
+    // paymentIntentId   String if implemented with stripe
+    paymentMethod     String
+
+    @@index([customerId], name: "customerId")
+}
+
+model OrderItem {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    quantity  Int
+    price     Decimal
+    order     Order    @relation(fields: [orderId], references: [id])
+    orderId   String
+    productId String
+
+    @@index([orderId], name: "orderId")
+    @@index([productId], name: "productId")
+}
+
+//Customer Models
+model Customer {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    firstName String   @db.VarChar(50)
+    lastName  String   @db.VarChar(50)
+    email     String   @unique
+    phone     String   @db.VarChar(20)
+    orders    Order[]
 }
