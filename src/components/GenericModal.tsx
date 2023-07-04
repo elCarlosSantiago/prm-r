@@ -1,11 +1,8 @@
 export const GenericModal: React.FC<{
   title: string
-  submit: () => void
-  cancel: React.Dispatch<React.SetStateAction<boolean>>
-  submitText?: string
-  cancelText?: string
+  close: React.Dispatch<React.SetStateAction<boolean>>
   children: React.ReactNode
-}> = ({ title, submit, cancel, submitText, cancelText, children }) => {
+}> = ({ title, close, children }) => {
   return (
     <div
       id="defaultModal"
@@ -13,8 +10,8 @@ export const GenericModal: React.FC<{
       className="z-50 flex h-full max-h-full w-full overflow-y-auto overflow-x-hidden border border-red-500 p-4"
     >
       <div className="m-auto max-h-full w-full max-w-3xl">
-        <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
-          <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
+        <div className="relative rounded-lg bg-white px-8 shadow dark:bg-gray-700">
+          <div className="mb-4 flex items-start justify-between rounded-t border-b py-4 dark:border-gray-600">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
               {title}
             </h3>
@@ -25,7 +22,7 @@ export const GenericModal: React.FC<{
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                cancel(false)
+                close(false)
               }}
             >
               <svg
@@ -45,28 +42,6 @@ export const GenericModal: React.FC<{
             </button>
           </div>
           {children}
-          <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
-            <button
-              data-modal-hide="defaultModal"
-              type="button"
-              className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={submit}
-            >
-              {submitText || "Submit"}
-            </button>
-            <button
-              data-modal-hide="defaultModal"
-              type="button"
-              className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                cancel(false)
-              }}
-            >
-              {cancelText || "Cancel"}
-            </button>
-          </div>
         </div>
       </div>
     </div>
