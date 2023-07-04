@@ -1,4 +1,6 @@
 import { z } from "zod"
+import { addressSchema } from "./address.schema"
+import { customerSchema } from "./customer.schema"
 
 export const orderItemSchema = z.object({
   id: z.string().optional(),
@@ -19,6 +21,15 @@ export const orderInputSchema = z.object({
   shippingAddressId: z.string(),
   paymentMethod: z.string(),
 })
+
+export const fullOrderSchema = orderInputSchema.merge(
+  z.object({
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    customer: customerSchema,
+    address: addressSchema,
+  })
+)
 
 export type OrderItem = z.infer<typeof orderItemSchema>
 
