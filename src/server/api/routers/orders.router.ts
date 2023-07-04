@@ -1,6 +1,5 @@
+import { fullOrderSchema } from "~/schemas/order.schema"
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc"
-import { notFound } from "~/utils"
-import { idSchema, orderInputSchema } from "~/schemas"
 
 export const ordersRouter = createTRPCRouter({
   //TODO: Paginate orders
@@ -35,6 +34,6 @@ export const ordersRouter = createTRPCRouter({
         paymentMethod: true,
       },
     })
-    return orders
+    return orders.map((order) => fullOrderSchema.parse(order))
   }),
 })
