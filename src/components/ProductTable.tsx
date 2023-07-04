@@ -1,10 +1,11 @@
-import { type ProductExport } from "~/schemas"
+import { type ProductOutput } from "~/schemas"
+import { centsToDollars } from "~/utils"
 
 type ProductTableProps = {
-  products?: ProductExport[]
+  products?: ProductOutput[]
   setOpenProductModal: React.Dispatch<React.SetStateAction<boolean>>
   setSelectedProduct: React.Dispatch<
-    React.SetStateAction<ProductExport | undefined>
+    React.SetStateAction<ProductOutput | undefined>
   >
 }
 
@@ -78,7 +79,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                         {product.category.name}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        ${product.price}
+                        {centsToDollars(product.price)}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                         {product.stock}
