@@ -53,7 +53,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
                   {products?.map((product) => (
                     <tr
-                      className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                       key={product.id}
                       onClick={() => {
                         setSelectedProduct(product)
