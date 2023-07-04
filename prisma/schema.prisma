@@ -105,7 +105,7 @@ model Address {
 
 //Clerk allows us to leverage Organizations & roles for users. For admin permissions / Org metadata.
 //Conversely, we could store User data in its own table and use Clerk for auth only.
-// Said model would look like this (give or take how much user info we want to store)
+// Said model would look like this (give or take depending on how much user info we want to store)
 
 // model User {
 //     id             String       @id @default(cuid())
