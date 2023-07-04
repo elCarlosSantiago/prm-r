@@ -24,7 +24,7 @@ model Product {
     categoryId  String
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
-    OrderItem   OrderItem[]
+    orderItem   OrderItem[]
 
     @@index([categoryId], name: "categoryId")
 }
@@ -44,7 +44,7 @@ model Order {
     updatedAt         DateTime    @updatedAt
     status            String      @default("PENDING")
     total             Int //This would get broken down into subtotals (tax, shipping, vendor_net, platform_margin, etc)
-    OrderItem         OrderItem[]
+    orderItem         OrderItem[]
     customer          Customer    @relation(fields: [customerId], references: [id])
     trackingNumber    String
     trackingCompany   String
@@ -54,10 +54,11 @@ model Order {
     paymentMethod     String
     // Organization      Organization? @relation(fields: [organizationId], references: [id])
     // organizationId    String?
-    Address           Address[]
+    address           Address     @relation(fields: [shippingAddressId], references: [id])
 
     // @@index([organizationId], name: "organizationId")
     @@index([customerId], name: "customerId")
+    @@index([shippingAddressId], name: "shippingAddressId")
 }
 
 model OrderItem {
@@ -97,12 +98,9 @@ model Address {
     state     String
     zip       String
     country   String
-    Order     Order    @relation(fields: [orderId], references: [id])
-    orderId   String
+    Order     Order[]
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
-
-    @@index([orderId], name: "orderId")
 }
 
 //Clerk allows us to leverage Organizations & roles for users. For admin permissions / Org metadata.
