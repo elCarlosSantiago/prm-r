@@ -88,7 +88,10 @@ export const ProductPage: React.FC = () => {
           edit={!!selectedProduct}
         />
       )}
-      <div className="gap-12 p-12">
+      <div className="flex-col gap-12 p-12">
+        <span className="mb-8 flex justify-center">
+          <h1 className="text-3xl font-bold">Products</h1>
+        </span>
         <ProductTable
           {...{ products, setOpenProductModal, setSelectedProduct }}
         />
