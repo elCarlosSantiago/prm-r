@@ -5,6 +5,7 @@ export { idSchema } from "./id.schema"
 export {
   orderItemSchema,
   orderInputSchema,
+  type FullOrder,
   type OrderItem,
   type OrderInput,
 } from "./order.schema"
