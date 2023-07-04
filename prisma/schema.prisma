@@ -12,18 +12,19 @@ datasource db {
 
 //Product Models
 model Product {
-    id             String        @id @default(cuid())
-    createdAt      DateTime      @default(now())
-    updatedAt      DateTime      @updatedAt
-    name           String
-    price          Int
-    stock          Int
-    description    String?       @db.VarChar(360)
-    image          String?
-    category       Category      @relation(fields: [categoryId], references: [id])
-    categoryId     String
+    id          String      @id @default(cuid())
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    name        String
+    price       Int
+    stock       Int
+    description String?     @db.VarChar(360)
+    image       String?
+    category    Category    @relation(fields: [categoryId], references: [id])
+    categoryId  String
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
+    OrderItem   OrderItem[]
 
     @@index([categoryId], name: "categoryId")
 }
@@ -38,13 +39,13 @@ model Category {
 
 //Order Models
 model Order {
-    id                String        @id @default(cuid())
-    createdAt         DateTime      @default(now())
-    updatedAt         DateTime      @updatedAt
-    status            String        @default("PENDING")
-    total             Int
+    id                String      @id @default(cuid())
+    createdAt         DateTime    @default(now())
+    updatedAt         DateTime    @updatedAt
+    status            String      @default("PENDING")
+    total             Int //This would get broken down into subtotals (tax, shipping, vendor_net, platform_margin, etc)
     OrderItem         OrderItem[]
-    customer          Customer      @relation(fields: [customerId], references: [id])
+    customer          Customer    @relation(fields: [customerId], references: [id])
     trackingNumber    String
     trackingCompany   String
     shippingAddressId String
@@ -53,6 +54,7 @@ model Order {
     paymentMethod     String
     // Organization      Organization? @relation(fields: [organizationId], references: [id])
     // organizationId    String?
+    Address           Address[]
 
     // @@index([organizationId], name: "organizationId")
     @@index([customerId], name: "customerId")
@@ -66,6 +68,7 @@ model OrderItem {
     price     Decimal
     order     Order    @relation(fields: [orderId], references: [id])
     orderId   String
+    product   Product  @relation(fields: [productId], references: [id])
     productId String
 
     @@index([orderId], name: "orderId")
@@ -84,9 +87,27 @@ model Customer {
     orders    Order[]
 }
 
+model Address {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    line1     String
+    line2     String?
+    city      String
+    state     String
+    zip       String
+    country   String
+    Order     Order    @relation(fields: [orderId], references: [id])
+    orderId   String
+    // Organization   Organization? @relation(fields: [organizationId], references: [id])
+    // organizationId String?
+
+    @@index([orderId], name: "orderId")
+}
+
 //Clerk allows us to leverage Organizations & roles for users. For admin permissions / Org metadata.
 //Conversely, we could store User data in its own table and use Clerk for auth only.
-// Said model would look like this
+// Said model would look like this (give or take how much user info we want to store)
 
 // model User {
 //     id             String       @id @default(cuid())
