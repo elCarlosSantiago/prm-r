@@ -2,7 +2,7 @@ export { categorySchema } from "./category.schema"
 export { idSchema } from "./id.schema"
 export {
   productInputSchema,
-  productExportSchema,
+  productOutputSchema,
   type ProductInput,
-  type ProductExport,
+  type ProductOutput,
 } from "./product.schema"

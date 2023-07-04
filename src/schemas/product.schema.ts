@@ -10,7 +10,7 @@ export const productInputSchema = z.object({
   categoryId: z.string(),
 })
 
-export const productExportSchema = productInputSchema.extend({
+export const productOutputSchema = productInputSchema.extend({
   category: z.object({
     name: z.string(),
   }),
@@ -18,4 +18,4 @@ export const productExportSchema = productInputSchema.extend({
 
 export type ProductInput = z.infer<typeof productInputSchema>
 
-export type ProductExport = z.infer<typeof productExportSchema>
+export type ProductOutput = z.infer<typeof productOutputSchema>
