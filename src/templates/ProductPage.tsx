@@ -1,6 +1,5 @@
 import { api } from "~/utils"
-import { LoadingPage } from "~/components"
-import { ProductTable } from "~/components/ProductTable"
+import { LoadingPage, ProductTable } from "~/components"
 
 export const ProductPage: React.FC = () => {
   const { data: products, isLoading } = api.products.getAll.useQuery()
