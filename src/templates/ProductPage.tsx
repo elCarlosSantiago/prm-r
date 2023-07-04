@@ -1,13 +1,13 @@
 import { api } from "~/utils"
 import { LoadingPage, ProductModal, ProductTable } from "~/components"
 import React, { useState } from "react"
-import { type ProductExport } from "~/schemas"
+import { type ProductOutput, type ProductInput } from "~/schemas"
 
 export const ProductPage: React.FC = () => {
   //State & Context
   const [openProductModal, setOpenProductModal] = useState<boolean>(false)
   const [selectedProduct, setSelectedProduct] = useState<
-    ProductExport | undefined
+    ProductOutput | undefined
   >(undefined)
   const ctx = api.useContext()
   //Query
@@ -42,7 +42,7 @@ export const ProductPage: React.FC = () => {
     },
   })
 
-  const handleSubmit = (product: ProductExport, edit: boolean) => {
+  const handleSubmit = (product: ProductInput, edit: boolean) => {
     if (edit) editProduct(product)
     else createProduct(product)
   }
