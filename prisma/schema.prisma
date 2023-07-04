@@ -66,7 +66,7 @@ model OrderItem {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     quantity  Int
-    price     Decimal
+    price     Int // Zod does not play well with Decimal type. Investigate.
     order     Order    @relation("OrderItems", fields: [orderId], references: [id])
     orderId   String
     product   Product  @relation("ProductOrderItems", fields: [productId], references: [id])
