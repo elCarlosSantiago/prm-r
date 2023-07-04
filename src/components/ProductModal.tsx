@@ -1,28 +1,38 @@
-import { GenericModal, Input } from "~/components"
-import { type ProductInput, type ProductOutput } from "~/schemas"
+import { GenericModal, Input, Select } from "~/components"
+import { type Category, type ProductInput, type ProductOutput } from "~/schemas"
 import { useForm } from "react-hook-form"
+import { dollarsToCents } from "~/utils"
 
-export const ProductModal = ({
-  selectedProduct,
-  setSelectedProduct,
-  close,
-  edit,
-  submit,
-}: {
+type ProductModalProps = {
   selectedProduct?: ProductOutput
-  setSelectedProduct: React.Dispatch<
-    React.SetStateAction<ProductOutput | undefined>
-  >
   close: React.Dispatch<React.SetStateAction<boolean>>
   edit: boolean
   submit: (product: ProductInput, edit: boolean) => void
+  categories?: Category[]
+}
+
+export const ProductModal: React.FC<ProductModalProps> = ({
+  selectedProduct,
+  close,
+  edit,
+  submit,
+  categories,
 }) => {
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors },
     trigger,
     getValues,
-  } = useForm<ProductOutput>({})
+  } = useForm<ProductOutput>({
+    defaultValues: {
+      name: selectedProduct?.name ?? "",
+      description: selectedProduct?.description ?? "",
+      stock: selectedProduct?.stock ?? 0,
+      price: selectedProduct?.price ? selectedProduct?.price / 100 : 0,
+      image: selectedProduct?.image ?? "",
+      categoryId: selectedProduct?.categoryId ?? "",
+    },
+  })
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -35,12 +45,13 @@ export const ProductModal = ({
             description: product.description,
             name: product.name,
             stock: Number(product.stock),
-            price: Number(product.price),
+            price: Number(dollarsToCents(product.price)),
             image: product.image,
             categoryId: product.categoryId,
+            id: selectedProduct?.id,
           }
-          console.log({ product, payload })
           submit(payload, edit)
+          close(false)
         } else {
           console.log({ errors })
         }
@@ -59,7 +70,6 @@ export const ProductModal = ({
         <Input
           label="Name"
           placeholder="Product Name"
-          value={selectedProduct?.name ?? ""}
           {...register("name", { required: true })}
         />
         <div className="flex justify-between">
@@ -68,7 +78,6 @@ export const ProductModal = ({
             placeholder="Product Price"
             type="number"
             step={0.01}
-            value={String(selectedProduct?.price ?? 0)}
             {...register("price", {
               required: true,
             })}
@@ -77,7 +86,6 @@ export const ProductModal = ({
             label="Stock"
             placeholder="Product Stock"
             type="number"
-            value={String(selectedProduct?.stock ?? 0)}
             step={1}
             {...register("stock", {
               required: true,
@@ -90,9 +98,14 @@ export const ProductModal = ({
           label="Description"
           size="lg"
           placeholder="Product Description"
-          value={selectedProduct?.description ?? ""}
           {...register("description")}
         />
+        {categories && (
+          <Select
+            options={categories}
+            {...register("categoryId", { required: true })}
+          />
+        )}
         <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
           <button
             data-modal-hide="defaultModal"
