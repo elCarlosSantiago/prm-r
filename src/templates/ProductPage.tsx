@@ -13,8 +13,8 @@ export const ProductPage: React.FC = () => {
   //Query
   const { data: products, isLoading } = api.products.getAll.useQuery()
   const { mutate: editProduct } = api.products.edit.useMutation({
-    onSuccess: () => {
-      void ctx.products.getAll.invalidate()
+    onSuccess: async () => {
+      await ctx.products.getAll.invalidate()
       setSelectedProduct(undefined)
     },
     onError: (err) => {
@@ -27,17 +27,34 @@ export const ProductPage: React.FC = () => {
     },
   })
 
-  const handleSubmit = (product?: ProductExport) => {
-    if (product) editProduct(product)
+  const { mutate: createProduct } = api.products.create.useMutation({
+    onSuccess: async () => {
+      await ctx.products.getAll.invalidate()
+      setSelectedProduct(undefined)
+    },
+    onError: (err) => {
+      const errorMessage = err.data?.zodError?.fieldErrors.content
+      if (errorMessage && errorMessage[0]) {
+        alert(errorMessage[0])
+      } else {
+        alert("Failed to add! Please try again later.")
+      }
+    },
+  })
+
+  const handleSubmit = (product: ProductExport, edit: boolean) => {
+    if (edit) editProduct(product)
+    else createProduct(product)
   }
   if (isLoading) return <LoadingPage />
   return (
     <React.Fragment>
       {openProductModal && (
         <ProductModal
-          product={selectedProduct}
+          {...{ selectedProduct, setSelectedProduct }}
           close={() => setOpenProductModal(false)}
           submit={handleSubmit}
+          edit={!!selectedProduct}
         />
       )}
       <div className="gap-12 p-12">
