@@ -3,8 +3,15 @@ import { notFound } from "~/utils"
 import { idSchema, productSchema } from "~/schemas"
 
 export const productsRouter = createTRPCRouter({
-  getAll: privateProcedure.query(({ ctx }) => {
-    return ctx.prisma.product.findMany()
+  getAll: privateProcedure.query(async ({ ctx }) => {
+    const products = await ctx.prisma.product.findMany({
+      include: {
+        category: {
+          select: { name: true },
+        },
+      },
+    })
+    return products
   }),
 
   getById: privateProcedure.input(idSchema).query(async ({ ctx, input }) => {
