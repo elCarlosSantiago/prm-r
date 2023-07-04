@@ -1,6 +1,6 @@
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc"
 import { notFound } from "~/utils"
-import { idSchema, productSchema } from "~/schemas"
+import { idSchema, productInputSchema } from "~/schemas"
 
 export const productsRouter = createTRPCRouter({
   getAll: privateProcedure.query(async ({ ctx }) => {
@@ -23,7 +23,7 @@ export const productsRouter = createTRPCRouter({
   }),
 
   create: privateProcedure
-    .input(productSchema)
+    .input(productInputSchema)
     .mutation(async ({ ctx, input }) => {
       const product = await ctx.prisma.product.create({
         data: input,
@@ -32,7 +32,7 @@ export const productsRouter = createTRPCRouter({
     }),
 
   edit: privateProcedure
-    .input(productSchema)
+    .input(productInputSchema)
     .mutation(async ({ ctx, input }) => {
       const product = await ctx.prisma.product.update({
         where: { id: input.id },
