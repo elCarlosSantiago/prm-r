@@ -12,6 +12,7 @@ export const ProductPage: React.FC = () => {
   const ctx = api.useContext()
   //Query
   const { data: products, isLoading } = api.products.getAll.useQuery()
+  const { data: categories } = api.categories.getAll.useQuery()
   const { mutate: editProduct } = api.products.edit.useMutation({
     onSuccess: async () => {
       await ctx.products.getAll.invalidate()
@@ -51,7 +52,7 @@ export const ProductPage: React.FC = () => {
     <React.Fragment>
       {openProductModal && (
         <ProductModal
-          {...{ selectedProduct, setSelectedProduct }}
+          {...{ selectedProduct, setSelectedProduct, categories }}
           close={() => setOpenProductModal(false)}
           submit={handleSubmit}
           edit={!!selectedProduct}
