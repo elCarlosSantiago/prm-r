@@ -1,10 +1,17 @@
 import { type RouterOutputs } from "~/utils/api"
 
 type Products = RouterOutputs["products"]["getAll"]
-export const ProductTable = ({
+
+type ProductTableProps = {
+  products?: Products
+  setOpenProductModal: (open: boolean) => void
+  setSelectedProduct: (product: Products[number]) => void
+}
+
+export const ProductTable: React.FC<ProductTableProps> = ({
   products,
-}: {
-  products: Products | undefined
+  setOpenProductModal,
+  setSelectedProduct,
 }) => {
   if (!products) return null
   return (
@@ -47,6 +54,10 @@ export const ProductTable = ({
                     <tr
                       className="hover:bg-gray-100 dark:hover:bg-gray-700"
                       key={product.id}
+                      onClick={() => {
+                        setSelectedProduct(product)
+                        setOpenProductModal(true)
+                      }}
                     >
                       {/* <td className="w-4 p-4">
                         <div className="flex items-center justify-center">
