@@ -1,14 +1,13 @@
 import { GenericModal } from "./GenericModal"
-import { type RouterOutputs } from "~/utils/api"
-
-type Product = RouterOutputs["products"]["getAll"][number]
+import { type ProductExport } from "~/schemas"
 
 export const ProductModal = ({
   product,
   close,
 }: {
-  product?: Product
+  product?: ProductExport
   close: React.Dispatch<React.SetStateAction<boolean>>
+  submit: () => void
 }) => {
   return (
     <GenericModal
