@@ -1,4 +1,4 @@
-export { categorySchema } from "./category.schema"
+export { categorySchema, type Category } from "./category.schema"
 export { idSchema } from "./id.schema"
 export {
   productInputSchema,
