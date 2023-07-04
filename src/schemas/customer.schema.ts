@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { orderItemSchema } from "~/schemas"
+
 export const customerSchema = z.object({
   id: z.string().optional(),
   firstName: z.string(),
