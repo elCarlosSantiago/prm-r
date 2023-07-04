@@ -27,7 +27,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         >
           {options.map((option, i) => (
             <option key={`${option.id}-${i}`} value={option.id}>
-              {option.name}
+              <span className="'capitalize text-gray-900 dark:text-white">
+                {option.name}
+              </span>
             </option>
           ))}
         </select>

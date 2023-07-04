@@ -12,16 +12,18 @@ datasource db {
 
 //Product Models
 model Product {
-    id          String   @id @default(cuid())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    name        String
-    price       Int
-    stock       Int
-    description String?  @db.VarChar(360)
-    image       String?
-    category    Category @relation(fields: [categoryId], references: [id])
-    categoryId  String
+    id             String        @id @default(cuid())
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+    name           String
+    price          Int
+    stock          Int
+    description    String?       @db.VarChar(360)
+    image          String?
+    category       Category      @relation(fields: [categoryId], references: [id])
+    categoryId     String
+    // Organization   Organization? @relation(fields: [organizationId], references: [id])
+    // organizationId String?
 
     @@index([categoryId], name: "categoryId")
 }
@@ -36,20 +38,23 @@ model Category {
 
 //Order Models
 model Order {
-    id                String      @id @default(cuid())
-    createdAt         DateTime    @default(now())
-    updatedAt         DateTime    @updatedAt
-    status            String      @default("PENDING")
+    id                String        @id @default(cuid())
+    createdAt         DateTime      @default(now())
+    updatedAt         DateTime      @updatedAt
+    status            String        @default("PENDING")
     total             Int
     OrderItem         OrderItem[]
-    customer          Customer    @relation(fields: [customerId], references: [id])
+    customer          Customer      @relation(fields: [customerId], references: [id])
     trackingNumber    String
     trackingCompany   String
     shippingAddressId String
     customerId        String
     // paymentIntentId   String if implemented with stripe
     paymentMethod     String
+    // Organization      Organization? @relation(fields: [organizationId], references: [id])
+    // organizationId    String?
 
+    // @@index([organizationId], name: "organizationId")
     @@index([customerId], name: "customerId")
 }
 
@@ -78,3 +83,32 @@ model Customer {
     phone     String   @db.VarChar(20)
     orders    Order[]
 }
+
+//Clerk allows us to leverage Organizations & roles for users. For admin permissions / Org metadata.
+//Conversely, we could store User data in its own table and use Clerk for auth only.
+// Said model would look like this
+
+// model User {
+//     id             String       @id @default(cuid())
+//     createdAt      DateTime     @default(now())
+//     updatedAt      DateTime     @updatedAt
+//     firstName      String       @db.VarChar(50)
+//     lastName       String       @db.VarChar(50)
+//     email          String       @unique
+//     phone          String       @db.VarChar(20)
+//     // password  String we could opt for passworldess auth /based on project reqs.
+//     organizationId String
+//     Organization   Organization @relation(fields: [organizationId], references: [id])
+
+//     @@index([organizationId], name: "organizationId")
+// }
+
+// model Organization {
+//     id        String    @id @default(cuid())
+//     createdAt DateTime  @default(now())
+//     updatedAt DateTime  @updatedAt
+//     name      String    @db.VarChar(50)
+//     users     User[]
+//     products  Product[]
+//     orders    Order[]
+// }
