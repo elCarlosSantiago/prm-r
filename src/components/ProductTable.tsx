@@ -1,11 +1,9 @@
-import { type RouterOutputs } from "~/utils/api"
-
-type Products = RouterOutputs["products"]["getAll"]
+import { type ProductExport } from "~/schemas"
 
 type ProductTableProps = {
-  products?: Products
+  products?: ProductExport[]
   setOpenProductModal: (open: boolean) => void
-  setSelectedProduct: (product: Products[number]) => void
+  setSelectedProduct: (product: ProductExport) => void
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({
