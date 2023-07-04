@@ -20,11 +20,11 @@ model Product {
     stock       Int
     description String?     @db.VarChar(360)
     image       String?
-    category    Category    @relation(fields: [categoryId], references: [id])
+    category    Category    @relation("categoryProducts", fields: [categoryId], references: [id])
     categoryId  String
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
-    orderItem   OrderItem[]
+    OrderItem   OrderItem[] @relation("ProductOrderItems")
 
     @@index([categoryId], name: "categoryId")
 }
@@ -34,7 +34,7 @@ model Category {
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     name      String
-    products  Product[]
+    products  Product[] @relation("categoryProducts")
 }
 
 //Order Models
@@ -44,8 +44,8 @@ model Order {
     updatedAt         DateTime    @updatedAt
     status            String      @default("PENDING")
     total             Int //This would get broken down into subtotals (tax, shipping, vendor_net, platform_margin, etc)
-    orderItem         OrderItem[]
-    customer          Customer    @relation(fields: [customerId], references: [id])
+    orderItems        OrderItem[] @relation("OrderItems")
+    customer          Customer    @relation("CustomerOrders", fields: [customerId], references: [id])
     trackingNumber    String
     trackingCompany   String
     shippingAddressId String
@@ -54,7 +54,7 @@ model Order {
     paymentMethod     String
     // Organization      Organization? @relation(fields: [organizationId], references: [id])
     // organizationId    String?
-    address           Address     @relation(fields: [shippingAddressId], references: [id])
+    address           Address     @relation("AddressOrders", fields: [shippingAddressId], references: [id])
 
     // @@index([organizationId], name: "organizationId")
     @@index([customerId], name: "customerId")
@@ -67,9 +67,9 @@ model OrderItem {
     updatedAt DateTime @updatedAt
     quantity  Int
     price     Decimal
-    order     Order    @relation(fields: [orderId], references: [id])
+    order     Order    @relation("OrderItems", fields: [orderId], references: [id])
     orderId   String
-    product   Product  @relation(fields: [productId], references: [id])
+    product   Product  @relation("ProductOrderItems", fields: [productId], references: [id])
     productId String
 
     @@index([orderId], name: "orderId")
@@ -85,7 +85,7 @@ model Customer {
     lastName  String   @db.VarChar(50)
     email     String   @unique
     phone     String   @db.VarChar(20)
-    orders    Order[]
+    orders    Order[]  @relation("CustomerOrders")
 }
 
 model Address {
@@ -98,7 +98,7 @@ model Address {
     state     String
     zip       String
     country   String
-    Order     Order[]
+    orders    Order[]  @relation("AddressOrders")
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
 }
