@@ -4,6 +4,7 @@ import { idSchema, productInputSchema } from "~/schemas"
 
 export const productsRouter = createTRPCRouter({
   getAll: privateProcedure.query(async ({ ctx }) => {
+    //TODO: Paginate products
     const products = await ctx.prisma.product.findMany({
       include: {
         category: {
