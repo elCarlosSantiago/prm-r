@@ -9,7 +9,7 @@ export const addressSchema = z.object({
   state: z.string(),
   zip: z.string(),
   country: z.string(),
-  order: orderInputSchema.array(),
+  order: orderInputSchema.partial().array(),
 })
 
 export type Address = z.infer<typeof addressSchema>
