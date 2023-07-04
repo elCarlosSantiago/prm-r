@@ -18,7 +18,7 @@ model Product {
     name        String
     price       Decimal
     stock       Int
-    description String?  @db.VarChar(50)
+    description String?  @db.VarChar(360)
     image       String?
     category    Category @relation(fields: [categoryId], references: [id])
     categoryId  String

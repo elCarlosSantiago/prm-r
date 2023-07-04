@@ -2,8 +2,10 @@ import { type ProductExport } from "~/schemas"
 
 type ProductTableProps = {
   products?: ProductExport[]
-  setOpenProductModal: (open: boolean) => void
-  setSelectedProduct: (product: ProductExport) => void
+  setOpenProductModal: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedProduct: React.Dispatch<
+    React.SetStateAction<ProductExport | undefined>
+  >
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({

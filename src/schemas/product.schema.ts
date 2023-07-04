@@ -5,8 +5,8 @@ export const productInputSchema = z.object({
   name: z.string(),
   price: z.number(),
   stock: z.number(),
-  description: z.string().optional(),
-  image: z.string().optional(),
+  description: z.string().optional().nullable(),
+  image: z.string().optional().nullable(),
   categoryId: z.string(),
 })
 

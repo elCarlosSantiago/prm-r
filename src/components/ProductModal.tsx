@@ -7,7 +7,7 @@ export const ProductModal = ({
 }: {
   product?: ProductExport
   close: React.Dispatch<React.SetStateAction<boolean>>
-  submit: () => void
+  submit: (product: ProductExport) => void
 }) => {
   return (
     <GenericModal
