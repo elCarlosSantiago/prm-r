@@ -63,7 +63,7 @@ export const ProductTable = ({
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                         {product.name}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-500 dark:text-white">
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-500 dark:text-white">
                         {product.category.name}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
