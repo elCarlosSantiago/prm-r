@@ -7,7 +7,7 @@ export const GenericModal: React.FC<{
     <div
       id="defaultModal"
       aria-hidden="true"
-      className="z-50 flex h-full max-h-full w-full overflow-y-auto overflow-x-hidden border border-red-500 p-4"
+      className="absolute z-50 max-h-screen w-full max-w-full overflow-hidden p-4"
     >
       <div className="m-auto max-h-full w-full max-w-3xl">
         <div className="relative rounded-lg bg-white px-8 shadow dark:bg-gray-700">
