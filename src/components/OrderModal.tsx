@@ -47,6 +47,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 }) => {
   //STATE & CONSTS
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
+  const [orderItemsIdsToDelete, setOrderItemsIdsToDelete] = useState<string[]>(
+    []
+  )
   const orderItemsPricified = selectedOrder?.orderItems?.map((item) => ({
     ...item,
     price: (item.price ?? 0) / 100,
@@ -130,8 +133,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         )
         const newTotal = selectedProductsSubTotal ?? 0 //Here we would also add shipping, tax, fees, etc
         orderValues.total = Number((newTotal * 100).toFixed(2))
+        const payload = {
+          ...orderValues,
+          orderItemsIdsToDelete,
+        }
 
-        submit(orderValues, edit)
+        submit(payload, edit)
         close(false)
       })
       .catch((err) => {
@@ -139,6 +146,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       })
   }
 
+  const handleRemove = (index: number) => {
+    const values = getValues(`orderItems.${index}`)
+    if (values?.id) {
+      setOrderItemsIdsToDelete([...orderItemsIdsToDelete, values.id])
+    }
+    orderItemsRemove(index)
+  }
   return (
     <GenericModal title={edit ? "Edit Order" : "Add Order"} close={close}>
       <form className="m-auto w-full justify-start px-8">
@@ -156,6 +170,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           <div className="font-medium text-gray-900 dark:text-white">
             {products &&
               orderItemsFields.map((item, index) => {
+                const orderItem = getValues(`orderItems.${index}`)
                 return (
                   <div
                     className="flex w-full items-end justify-between gap-8"
@@ -165,6 +180,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       {...register(`orderItems.${index}.productId`, {
                         required: true,
                       })}
+                      defaultId={orderItem?.product?.id ?? ""}
                       options={products?.map((product) => ({
                         name: product.name,
                         id: product.id ?? "",
@@ -192,7 +208,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     />
                     <button
                       type="button"
-                      onClick={() => orderItemsRemove(index)}
+                      onClick={() => handleRemove(index)}
                       className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
                     >
                       X
