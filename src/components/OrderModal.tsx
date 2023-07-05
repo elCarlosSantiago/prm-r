@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { GenericModal, Input, Select } from "~/components"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useState } from "react"
-import { FullOrder, ProductInput } from "~/schemas"
-import { api, centsToDollars } from "~/utils"
+import { type FullOrder, type ProductInput } from "~/schemas"
+import { centsToDollars } from "~/utils"
 
 type OrderModalProps = {
   selectedOrder?: FullOrder
@@ -71,6 +72,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       trackingCompany: selectedOrder?.trackingCompany,
       trackingNumber: selectedOrder?.trackingNumber,
       address: selectedOrder?.address,
+      total: selectedOrder?.total,
     },
   })
 
@@ -93,6 +95,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         id: products[0].id,
         name: products[0].name,
         image: products[0].image,
+        categoryId: products[0].categoryId,
       },
     })
   }
@@ -104,7 +107,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     0
   )
 
-  const newTotal = selectedProductsSubTotal //Here we would also add shipping, tax, fees, etc
+  const newTotal = selectedProductsSubTotal ?? 0 //Here we would also add shipping, tax, fees, etc
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault()
@@ -112,8 +115,24 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     trigger()
       .then((isValid) => {
         if (!isValid) return
-        const orderValues = getValues()
-        console.log({ orderValues })
+        const orderValues = getValues() as FullOrder
+
+        //@ts-ignore
+        orderValues.orderItems = orderValues.orderItems?.map((item) => ({
+          ...item,
+          price: item?.price ? Number((item?.price * 100).toFixed(2)) : 0,
+        }))
+        const selectedProductsSubTotal = getValues("orderItems")?.reduce(
+          (acc, item) => {
+            return acc + item.price * item.quantity
+          },
+          0
+        )
+        const newTotal = selectedProductsSubTotal ?? 0 //Here we would also add shipping, tax, fees, etc
+        orderValues.total = Number((newTotal * 100).toFixed(2))
+
+        submit(orderValues, edit)
+        close(false)
       })
       .catch((err) => {
         console.log(err)
@@ -159,6 +178,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       step={0.01}
                       {...register(`orderItems.${index}.price`, {
                         required: true,
+                        valueAsNumber: true,
                       })}
                     />
                     <Input
@@ -167,6 +187,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       placeholder="Quantity"
                       {...register(`orderItems.${index}.quantity`, {
                         required: true,
+                        valueAsNumber: true,
                       })}
                     />
                     <button
@@ -198,7 +219,20 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
           <div className="flex items-center justify-between gap-8 border-b  border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
             <span className="text-lg">Customer Information</span>
-            <span>{selectedOrder?.customer?.email}</span>
+            <Input
+              size="sm"
+              placeholder="Payment Method"
+              {...register(`paymentMethod`, {
+                required: true,
+              })}
+            />
+            <Input
+              size="sm"
+              placeholder="Customer Email"
+              {...register(`customer.email`, {
+                required: true,
+              })}
+            />
           </div>
           <div className="flex-col items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
             <span className="text-lg">Shipping Address</span>
@@ -217,9 +251,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               <Input
                 size="sm"
                 placeholder="line2"
-                {...register(`address.line2`, {
-                  required: true,
-                })}
+                {...register(`address.line2`)}
               />
             </div>
             <div className="flex w-full items-center justify-between border-b border-dashed">
@@ -286,6 +318,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
             )}
           </div>
+
           <div className="flex items-center justify-between space-x-2 rounded-b  p-6 dark:border-gray-600">
             <div className="flex gap-4">
               <button
@@ -325,10 +358,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   data-modal-hide="defaultModal"
                   type="button"
                   className="rounded-lg border border-gray-200 bg-red-300 px-5 py-2.5 text-sm font-medium text-gray-100 hover:bg-red-500 hover:text-white focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
-                  // onClick={() => {
-                  //   deleteProduct({ id: selectedProduct?.id ?? "" })
-                  //   close(false)
-                  // }}
+                  onClick={() => {
+                    if (!selectedOrder?.id) return
+                    archiveOrder({ id: selectedOrder?.id })
+                    close(false)
+                  }}
                 >
                   Confirm
                 </button>
