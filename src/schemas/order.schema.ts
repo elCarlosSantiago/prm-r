@@ -28,14 +28,15 @@ export const fullOrderSchema = orderInputSchema
     trackingNumber: true,
     trackingCompany: true,
     shippingAddressId: true,
+    orderItems: true,
   })
   .merge(
     z.object({
-      createdAt: z.date(),
+      createdAt: z.date().optional(),
       updatedAt: z.date().optional(),
       customer: z
         .object({
-          id: z.string(),
+          id: z.string().optional(),
           firstName: z.string().optional(),
           lastName: z.string().optional(),
           email: z.string(),
@@ -44,7 +45,7 @@ export const fullOrderSchema = orderInputSchema
         .optional(),
       address: z
         .object({
-          id: z.string(),
+          id: z.string().optional(),
           line1: z.string(),
           line2: z.string().optional().nullable(),
           city: z.string(),
