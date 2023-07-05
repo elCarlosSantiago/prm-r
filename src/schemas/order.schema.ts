@@ -46,7 +46,7 @@ export const fullOrderSchema = orderInputSchema
         .object({
           id: z.string(),
           line1: z.string(),
-          line2: z.string().optional(),
+          line2: z.string().optional().nullable(),
           city: z.string(),
           state: z.string(),
           zip: z.string(),
