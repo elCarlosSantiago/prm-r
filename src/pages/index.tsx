@@ -2,7 +2,6 @@ import { useUser } from "@clerk/nextjs"
 import Head from "next/head"
 import React from "react"
 import { NavBar } from "~/components"
-import { ProductPage } from "~/templates"
 
 export default function Home() {
   const { isSignedIn } = useUser()
