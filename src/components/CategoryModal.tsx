@@ -3,6 +3,7 @@ import { GenericModal } from "./GenericModal"
 import { Input } from "./Input"
 import { type Category } from "~/schemas"
 import { useState } from "react"
+import { toast } from "react-hot-toast"
 
 type CategoryModalProps = {
   edit: boolean
@@ -38,7 +39,12 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
     e.stopPropagation()
     trigger()
       .then((isValid) => {
-        if (!isValid) return
+        if (!isValid) {
+          const firstValue = Object.entries(errors)[0]
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          toast.error(`${firstValue?.[0]}-${firstValue?.[1].type}`)
+          return
+        }
         const category: Category = getValues()
         submit(category, edit)
         close(false)

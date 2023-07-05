@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { toast } from "react-hot-toast"
 import { LoadingPage, OrderModal, OrderTable } from "~/components"
 import { type FullOrder } from "~/schemas"
 import { api } from "~/utils"
@@ -28,9 +29,9 @@ export const OrderPage: React.FC = () => {
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content
       if (errorMessage && errorMessage[0]) {
-        alert(errorMessage[0])
+        toast.error(errorMessage[0])
       } else {
-        alert("Failed to edit! Please try again later.")
+        toast.error("Failed to edit! Please try again later.")
       }
     },
   })
@@ -42,9 +43,9 @@ export const OrderPage: React.FC = () => {
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content
       if (errorMessage && errorMessage[0]) {
-        alert(errorMessage[0])
+        toast.error(errorMessage[0])
       } else {
-        alert("Failed to create! Please try again later.")
+        toast.error("Failed to create! Please try again later.")
       }
     },
   })
@@ -57,9 +58,9 @@ export const OrderPage: React.FC = () => {
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content
       if (errorMessage && errorMessage[0]) {
-        alert(errorMessage[0])
+        toast.error(errorMessage[0])
       } else {
-        alert("Failed to archive! Please try again later.")
+        toast.error("Failed to archive! Please try again later.")
       }
     },
   })

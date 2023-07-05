@@ -4,6 +4,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { useState } from "react"
 import { type FullOrder, type ProductInput } from "~/schemas"
 import { centsToDollars } from "~/utils"
+import { toast } from "react-hot-toast"
 
 type OrderModalProps = {
   selectedOrder?: FullOrder
@@ -117,7 +118,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     e.stopPropagation()
     trigger()
       .then((isValid) => {
-        if (!isValid) return
+        if (!isValid) {
+          const firstValue = Object.entries(errors)[0]
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          toast.error(`${firstValue?.[0]}-${firstValue?.[1].type}`)
+        }
         const orderValues = getValues() as FullOrder
 
         //@ts-ignore

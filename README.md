@@ -34,6 +34,11 @@ The Product Resource Manager is a project that utilizes several technologies to 
 
 - [Prisma](https://prisma.io): Prisma is an open-source database toolkit that provides an Object-Relational Mapping (ORM) layer for database interactions.
 - [PlanetScale](https://app.planetscale.com/): PlanetScale is a database platform that offers a fully managed MySQL-compatible database service with built-in scalability and high availability.
+- [Upstash](https://upstash.com/): is a serverless Redis database service that provides scalable and high-performance in-memory data storage and caching.
+
+### Caching
+
+- [Redis](https://redis.io/) is an open-source in-memory data structure store that is used as a cache in this project.
 
 ### Utilities
 
@@ -41,6 +46,7 @@ The Product Resource Manager is a project that utilizes several technologies to 
 - [s3](https://docs.aws.amazon.com/): Amazon S3 (Simple Storage Service) is an object storage service that provides industry-leading scalability, data availability, security, and performance.
 - [eslint](https://eslint.org/): ESLint is a widely used linter tool for identifying and reporting code quality issues in JavaScript and TypeScript codebases.
 - [Prettier](https://prettier.io/docs/en/configuration.html): Prettier is an opinionated code formatter that enforces consistent code style and formatting rules across the project.
+- [React-Hot-Toast](https://react-hot-toast.com/): Lightweight react notification package.
 
 ## Getting Started
 

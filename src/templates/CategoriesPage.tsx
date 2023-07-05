@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { toast } from "react-hot-toast"
 import { CategoryModal, CategoryTable, LoadingPage } from "~/components"
 import { type Category } from "~/schemas"
 import { api } from "~/utils"
@@ -28,9 +29,9 @@ export const CategoriesPage: React.FC = () => {
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content
       if (errorMessage && errorMessage[0]) {
-        alert(errorMessage[0])
+        toast.error(errorMessage[0])
       } else {
-        alert("Failed to edit! Please try again later.")
+        toast.error("Failed to edit! Please try again later.")
       }
     },
   })
@@ -43,9 +44,9 @@ export const CategoriesPage: React.FC = () => {
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content
       if (errorMessage && errorMessage[0]) {
-        alert(errorMessage[0])
+        toast.error(errorMessage[0])
       } else {
-        alert("Failed to add! Please try again later.")
+        toast.error("Failed to add! Please try again later.")
       }
     },
   })
@@ -58,9 +59,9 @@ export const CategoriesPage: React.FC = () => {
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content
       if (errorMessage && errorMessage[0]) {
-        alert(errorMessage[0])
+        toast.error(errorMessage[0])
       } else {
-        alert("Failed to delete! Please try again later.")
+        toast.error("Failed to delete! Please try again later.")
       }
     },
   })
