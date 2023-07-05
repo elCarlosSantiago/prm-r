@@ -222,7 +222,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 )
               })}
           </div>
-          <div className="flex items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
+          <div className="flex flex-col justify-between gap-4 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white sm:flex-row sm:items-center sm:gap-8">
             <Select
               options={orderStatuses}
               {...register("status", { required: true })}
@@ -238,8 +238,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               {...register("trackingNumber", { required: true })}
             />
           </div>
-          <div className="flex items-center justify-between gap-8 border-b  border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
-            <span className="text-lg">Customer Information</span>
+          <div className="flex flex-col justify-between gap-8 border-b border-gray-400 py-2  text-base font-medium text-gray-900 dark:text-white sm:flex-row  sm:items-center">
+            <span className="text-lg ">Customer Information</span>
             <Input
               size="sm"
               placeholder="Payment Method"
