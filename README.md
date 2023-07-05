@@ -46,6 +46,7 @@ The Product Resource Manager is a project that utilizes several technologies to 
 - [s3](https://docs.aws.amazon.com/): Amazon S3 (Simple Storage Service) is an object storage service that provides industry-leading scalability, data availability, security, and performance.
 - [eslint](https://eslint.org/): ESLint is a widely used linter tool for identifying and reporting code quality issues in JavaScript and TypeScript codebases.
 - [Prettier](https://prettier.io/docs/en/configuration.html): Prettier is an opinionated code formatter that enforces consistent code style and formatting rules across the project.
+- [React-Hot-Toast](https://react-hot-toast.com/): Lightweight react notification package.
 
 ## Getting Started
 
