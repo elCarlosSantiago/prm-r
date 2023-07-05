@@ -59,6 +59,8 @@ To get started with the Product Resource Manager project, follow these steps:
 5. Access the application in your browser at `http://localhost:3000`.
 6. There is currently no seed file. Run `npx prisma studio` to access Prisma studio to modify rows manually.
 7. `npx prisma db push` if you make any changes to prisma.schema file
+8. The app has been purposely kept organization/user agnostic for data testing purposes. But the foundation is there to build per user basis.
+9. The app uses tailwind mobile responsive classes so it should work on a mobile device.
 
 ## Project Structure
 
