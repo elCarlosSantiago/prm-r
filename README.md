@@ -34,6 +34,11 @@ The Product Resource Manager is a project that utilizes several technologies to 
 
 - [Prisma](https://prisma.io): Prisma is an open-source database toolkit that provides an Object-Relational Mapping (ORM) layer for database interactions.
 - [PlanetScale](https://app.planetscale.com/): PlanetScale is a database platform that offers a fully managed MySQL-compatible database service with built-in scalability and high availability.
+- [Upstash](https://upstash.com/): is a serverless Redis database service that provides scalable and high-performance in-memory data storage and caching.
+
+### Caching
+
+- [Redis](https://redis.io/) is an open-source in-memory data structure store that is used as a cache in this project.
 
 ### Utilities
 
