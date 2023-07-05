@@ -61,8 +61,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           close(false)
         } else {
           const firstValue = Object.entries(errors)[0]
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          toast.error(`${firstValue?.[0]}-${firstValue?.[1].type}`)
+          if (firstValue) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            toast.error(`${firstValue?.[0]}-${firstValue?.[1]?.type}`)
+          }
         }
       })
       .catch((err) => {
