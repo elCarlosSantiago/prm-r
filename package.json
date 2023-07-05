@@ -39,6 +39,8 @@
     "@types/s3-upload-stream": "^1.0.4",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
+    "@upstash/ratelimit": "^0.4.3",
+    "@upstash/redis": "^1.22.0",
     "autoprefixer": "^10.4.14",
     "aws-sdk": "^2.1410.0",
     "eslint": "^8.40.0",

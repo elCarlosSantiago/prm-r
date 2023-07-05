@@ -8,7 +8,15 @@
 import { idSchema } from "~/schemas"
 import { fullOrderSchema } from "~/schemas/order.schema"
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc"
-import { notFound } from "~/utils"
+import { badRequest, notFound } from "~/utils"
+import { Ratelimit } from "@upstash/ratelimit"
+import { Redis } from "@upstash/redis"
+
+const rateLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(100, "1 m"),
+  analytics: true,
+})
 
 export const ordersRouter = createTRPCRouter({
   //TODO: Paginate orders
@@ -99,6 +107,14 @@ export const ordersRouter = createTRPCRouter({
   edit: privateProcedure
     .input(fullOrderSchema)
     .mutation(async ({ ctx, input }) => {
+      const userId = ctx.auth?.userId
+      const { success } = await rateLimit.limit(userId)
+      if (!success) {
+        throw badRequest(
+          "Too many requests. You have been rate limited! Please wait 1 minute."
+        )
+      }
+
       //TODO: Update function to batch update
       const orderInput = input
       const orderAddress = orderInput.address
