@@ -28,6 +28,7 @@ The Product Resource Manager is a project that utilizes several technologies to 
 ### DevOps/Deployment
 
 - [Vercel](https://vercel.com/): Vercel is a cloud platform for deploying and serving Next.js applications with a focus on performance and scalability.
+- [Axiom](https://app.axiom.co/): Axiom is a data analysis, logging, and visualization platform that helps you gain insights from your data.
 
 ### Database
 
@@ -40,7 +41,6 @@ The Product Resource Manager is a project that utilizes several technologies to 
 - [s3](https://docs.aws.amazon.com/): Amazon S3 (Simple Storage Service) is an object storage service that provides industry-leading scalability, data availability, security, and performance.
 - [eslint](https://eslint.org/): ESLint is a widely used linter tool for identifying and reporting code quality issues in JavaScript and TypeScript codebases.
 - [Prettier](https://prettier.io/docs/en/configuration.html): Prettier is an opinionated code formatter that enforces consistent code style and formatting rules across the project.
-- [Axiom](https://app.axiom.co/): Axiom is a data analysis and visualization platform that helps you gain insights from your data.
 
 ## Getting Started
 
