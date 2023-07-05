@@ -22,7 +22,9 @@ export default function Home() {
               Please sign in to view the product management system.
             </div>
           ) : (
-            <ProductPage />
+            <div className="flex h-full items-center justify-center">
+              Welcome to your product management system.
+            </div>
           )}
         </div>
       </main>

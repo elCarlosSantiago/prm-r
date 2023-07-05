@@ -1,20 +1,20 @@
-import { type ProductOutput } from "~/schemas"
+import React from "react"
+import { type FullOrder } from "~/schemas"
 import { centsToDollars } from "~/utils"
 
-type ProductTableProps = {
-  products?: ProductOutput[]
-  setOpenProductModal: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedProduct: React.Dispatch<
-    React.SetStateAction<ProductOutput | undefined>
-  >
+type OrderTableProps = {
+  orders?: FullOrder[]
+  setOpenOrdersModal: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedOrder: React.Dispatch<React.SetStateAction<FullOrder | undefined>>
 }
 
-export const ProductTable: React.FC<ProductTableProps> = ({
-  products,
-  setOpenProductModal,
-  setSelectedProduct,
+export const OrderTable: React.FC<OrderTableProps> = ({
+  orders,
+  setOpenOrdersModal,
+  setSelectedOrder,
 }) => {
-  if (!products) return null
+  if (!orders) return null
+
   return (
     <div className="mx-auto max-w-5xl">
       <div className="flex flex-col">
@@ -28,61 +28,78 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
                     >
-                      Product Name
+                      Date
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
                     >
-                      Category
+                      Status
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
                     >
-                      Price
+                      Total
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
                     >
-                      Stock
+                      Email
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
+                    >
+                      Products
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
+                    >
+                      Payment Method
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400"
+                    >
+                      Tracking Company
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                  {products?.map((product) => (
+                  {orders?.map((order: FullOrder) => (
                     <tr
                       className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                      key={product.id}
+                      key={order.id}
                       onClick={() => {
-                        setSelectedProduct(product)
-                        setOpenProductModal(true)
+                        setSelectedOrder(order)
+                        setOpenOrdersModal(true)
                       }}
                     >
-                      {/* <td className="w-4 p-4">
-                        <div className="flex items-center justify-center">
-                          <input
-                            id="checkbox-table-1"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                          />
-                          <label htmlFor="checkbox-table-1" className="sr-only">
-                            checkbox
-                          </label>
-                        </div>
-                      </td> */}
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        {product.name}
+                        {order?.createdAt?.toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-500 dark:text-white">
-                        {product.category.name}
+                        {order.status}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        {centsToDollars(product.price)}
+                        {centsToDollars(order.total)}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        {product.stock}
+                        {order?.customer?.email}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                        {order?.orderItems?.length === 1
+                          ? order.orderItems?.[0]?.product.name
+                          : `${order?.orderItems?.length ?? ""} products`}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                        {order.paymentMethod}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                        {order.trackingCompany}
                       </td>
                     </tr>
                   ))}

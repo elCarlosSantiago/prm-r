@@ -12,16 +12,20 @@ datasource db {
 
 //Product Models
 model Product {
-    id          String   @id @default(cuid())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id          String      @id @default(cuid())
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
     name        String
     price       Int
     stock       Int
-    description String?  @db.VarChar(360)
+    description String?     @db.VarChar(360)
     image       String?
-    category    Category @relation(fields: [categoryId], references: [id])
+    category    Category    @relation("categoryProducts", fields: [categoryId], references: [id])
     categoryId  String
+    // Organization   Organization? @relation(fields: [organizationId], references: [id])
+    // organizationId String?
+    OrderItem   OrderItem[] @relation("ProductOrderItems")
+    archivedAt  DateTime?   @db.DateTime
 
     @@index([categoryId], name: "categoryId")
 }
@@ -31,7 +35,7 @@ model Category {
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     name      String
-    products  Product[]
+    products  Product[] @relation("categoryProducts")
 }
 
 //Order Models
@@ -40,17 +44,23 @@ model Order {
     createdAt         DateTime    @default(now())
     updatedAt         DateTime    @updatedAt
     status            String      @default("PENDING")
-    total             Int
-    OrderItem         OrderItem[]
-    customer          Customer    @relation(fields: [customerId], references: [id])
+    total             Int //This would get broken down into subtotals (tax, shipping, vendor_net, platform_margin, etc)
+    orderItems        OrderItem[] @relation("OrderItems")
+    customer          Customer    @relation("CustomerOrders", fields: [customerId], references: [id])
     trackingNumber    String
     trackingCompany   String
     shippingAddressId String
     customerId        String
+    archivedAt        DateTime?   @db.DateTime
     // paymentIntentId   String if implemented with stripe
     paymentMethod     String
+    // Organization      Organization? @relation(fields: [organizationId], references: [id])
+    // organizationId    String?
+    address           Address     @relation("AddressOrders", fields: [shippingAddressId], references: [id])
 
+    // @@index([organizationId], name: "organizationId")
     @@index([customerId], name: "customerId")
+    @@index([shippingAddressId], name: "shippingAddressId")
 }
 
 model OrderItem {
@@ -58,9 +68,10 @@ model OrderItem {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     quantity  Int
-    price     Decimal
-    order     Order    @relation(fields: [orderId], references: [id])
+    price     Int // Zod does not play well with Decimal type. Investigate.
+    order     Order    @relation("OrderItems", fields: [orderId], references: [id])
     orderId   String
+    product   Product  @relation("ProductOrderItems", fields: [productId], references: [id])
     productId String
 
     @@index([orderId], name: "orderId")
@@ -72,9 +83,53 @@ model Customer {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    firstName String   @db.VarChar(50)
-    lastName  String   @db.VarChar(50)
+    firstName String?  @db.VarChar(50)
+    lastName  String?  @db.VarChar(50)
     email     String   @unique
-    phone     String   @db.VarChar(20)
-    orders    Order[]
+    phone     String?  @db.VarChar(20)
+    orders    Order[]  @relation("CustomerOrders")
 }
+
+model Address {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    line1     String
+    line2     String?
+    city      String
+    state     String
+    zip       String
+    country   String
+    orders    Order[]  @relation("AddressOrders")
+    // Organization   Organization? @relation(fields: [organizationId], references: [id])
+    // organizationId String?
+}
+
+//Clerk allows us to leverage Organizations & roles for users. For admin permissions / Org metadata.
+//Conversely, we could store User data in its own table and use Clerk for auth only.
+// Said model would look like this (give or take depending on how much user info we want to store)
+
+// model User {
+//     id             String       @id @default(cuid())
+//     createdAt      DateTime     @default(now())
+//     updatedAt      DateTime     @updatedAt
+//     firstName      String       @db.VarChar(50)
+//     lastName       String       @db.VarChar(50)
+//     email          String       @unique
+//     phone          String       @db.VarChar(20)
+//     // password  String we could opt for passworldess auth /based on project reqs.
+//     organizationId String
+//     Organization   Organization @relation(fields: [organizationId], references: [id])
+
+//     @@index([organizationId], name: "organizationId")
+// }
+
+// model Organization {
+//     id        String    @id @default(cuid())
+//     createdAt DateTime  @default(now())
+//     updatedAt DateTime  @updatedAt
+//     name      String    @db.VarChar(50)
+//     users     User[]
+//     products  Product[]
+//     orders    Order[]
+// }
