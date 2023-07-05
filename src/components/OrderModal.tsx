@@ -1,8 +1,8 @@
 import { GenericModal, Input, Select } from "~/components"
 import { useFieldArray, useForm } from "react-hook-form"
-import { useEffect, useState } from "react"
-import { FullOrder, OrderItem, ProductInput } from "~/schemas"
-import { centsToDollars } from "~/utils"
+import { useState } from "react"
+import { FullOrder, ProductInput } from "~/schemas"
+import { api } from "~/utils"
 
 type OrderModalProps = {
   selectedOrder?: FullOrder
@@ -12,6 +12,29 @@ type OrderModalProps = {
   archiveOrder: ({ id }: { id: string }) => void
   products?: ProductInput[]
 }
+//TODO: Extract this to a its type file
+const orderStatuses = [
+  {
+    id: "PENDING",
+    name: "Pending",
+  },
+  {
+    id: "SHIPPED",
+    name: "Shipped",
+  },
+  {
+    id: "DELIVERED",
+    name: "Delivered",
+  },
+  {
+    id: "CANCELED",
+    name: "Canceled",
+  },
+  {
+    id: "REFUNDED",
+    name: "Refunded",
+  },
+]
 
 export const OrderModal: React.FC<OrderModalProps> = ({
   selectedOrder,
@@ -27,7 +50,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     ...item,
     price: (item.price ?? 0) / 100,
   }))
-  console.log({ orderItemsPricified })
+  console.log({ selectedOrder })
 
   const {
     register,
@@ -38,6 +61,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   } = useForm({
     defaultValues: {
       orderItems: orderItemsPricified,
+      status: selectedOrder?.status ?? "PENDING",
+      customer: selectedOrder?.customer ?? {},
+      id: selectedOrder?.id,
+      paymentMethod: selectedOrder?.paymentMethod ?? "card",
+      trackingCompany: selectedOrder?.trackingCompany ?? "",
+      trackingNumber: selectedOrder?.trackingNumber ?? "",
+      address: selectedOrder?.address ?? {},
     },
   })
 
@@ -45,6 +75,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     control,
     name: "orderItems",
   })
+
+  const selectedProductsTotal = getValues("orderItems")?.reduce((acc, item) => {
+    return acc + item.price * item.quantity
+  }, 0)
 
   const addProduct = () => {
     if (!products?.[0]) return
@@ -74,12 +108,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               Add Product
             </button>
           </div>
-          <div className=" font-medium text-gray-900 dark:text-white">
+          <div className="font-medium text-gray-900 dark:text-white">
             {products &&
               fields.map((item, index) => {
                 return (
                   <div
-                    className="flex w-full items-center justify-between gap-8"
+                    className="flex w-full items-end justify-between gap-8"
                     key={`${item.id}-${index}`}
                   >
                     <Select
@@ -95,6 +129,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       label="Price"
                       placeholder="Product Price"
                       type="number"
+                      size="sm"
                       step={0.01}
                       {...register(`orderItems.${index}.price`, {
                         required: true,
@@ -102,6 +137,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     />
                     <Input
                       label="Quantity"
+                      size="sm"
                       placeholder="Quantity"
                       {...register(`orderItems.${index}.quantity`, {
                         required: true,
@@ -117,6 +153,26 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   </div>
                 )
               })}
+          </div>
+          <div className="flex items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
+            <Select
+              options={orderStatuses}
+              {...register("status", { required: true })}
+            />
+            <Input
+              label="Tracking Company"
+              placeholder="USPS..."
+              {...(register("trackingCompany"), { required: true })}
+            />
+            <Input
+              label="Tracking Number"
+              placeholder="#1234567890"
+              {...(register("trackingNumber"), { required: true })}
+            />
+          </div>
+          <div className="flex items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
+            <div>Customer Information</div>
+            {selectedOrder?.customer?.email}
           </div>
         </div>
       </form>
