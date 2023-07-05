@@ -1,5 +1,10 @@
 export { addressSchema, type Address } from "./address.schema"
-export { categorySchema, type Category } from "./category.schema"
+export {
+  categorySchema,
+  categoryInputSchema,
+  type CategoryInput,
+  type Category,
+} from "./category.schema"
 export { customerSchema, type Customer } from "./customer.schema"
 export { idSchema } from "./id.schema"
 export {

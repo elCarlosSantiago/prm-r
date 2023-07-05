@@ -22,6 +22,7 @@ export const orderInputSchema = z.object({
   paymentMethod: z.string(),
 })
 
+//Decouple input from output
 export const fullOrderSchema = orderInputSchema
   .partial({
     paymentMethod: true,
@@ -54,6 +55,7 @@ export const fullOrderSchema = orderInputSchema
           country: z.string(),
         })
         .optional(),
+      orderItemsIdsToDelete: z.string().array().optional(),
     })
   )
 

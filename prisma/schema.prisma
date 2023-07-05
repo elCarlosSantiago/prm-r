@@ -25,17 +25,18 @@ model Product {
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
     OrderItem   OrderItem[] @relation("ProductOrderItems")
-    archivedAt  DateTime?   @db.DateTime
+    archivedAt  DateTime?   @db.DateTime(0)
 
     @@index([categoryId], name: "categoryId")
 }
 
 model Category {
-    id        String    @id @default(cuid())
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    name      String
-    products  Product[] @relation("categoryProducts")
+    id         String    @id @default(cuid())
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+    name       String
+    products   Product[] @relation("categoryProducts")
+    archivedAt DateTime? @db.DateTime(0)
 }
 
 //Order Models
@@ -51,7 +52,7 @@ model Order {
     trackingCompany   String
     shippingAddressId String
     customerId        String
-    archivedAt        DateTime?   @db.DateTime
+    archivedAt        DateTime?   @db.DateTime(0)
     // paymentIntentId   String if implemented with stripe
     paymentMethod     String
     // Organization      Organization? @relation(fields: [organizationId], references: [id])
@@ -64,15 +65,16 @@ model Order {
 }
 
 model OrderItem {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    quantity  Int
-    price     Int // Zod does not play well with Decimal type. Investigate.
-    order     Order    @relation("OrderItems", fields: [orderId], references: [id])
-    orderId   String
-    product   Product  @relation("ProductOrderItems", fields: [productId], references: [id])
-    productId String
+    id         String    @id @default(cuid())
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+    quantity   Int
+    price      Int // Zod does not play well with Decimal type. Investigate.
+    order      Order     @relation("OrderItems", fields: [orderId], references: [id])
+    orderId    String
+    product    Product   @relation("ProductOrderItems", fields: [productId], references: [id])
+    productId  String
+    archivedAt DateTime? @db.DateTime(0)
 
     @@index([orderId], name: "orderId")
     @@index([productId], name: "productId")

@@ -49,13 +49,24 @@ export const OrderPage: React.FC = () => {
     },
   })
 
+  const { mutate: archiveOrder } = api.orders.archive.useMutation({
+    onSuccess: async () => {
+      await ctx.orders.getAll.invalidate()
+      setSelectedOrder(undefined)
+    },
+    onError: (err) => {
+      const errorMessage = err.data?.zodError?.fieldErrors.content
+      if (errorMessage && errorMessage[0]) {
+        alert(errorMessage[0])
+      } else {
+        alert("Failed to archive! Please try again later.")
+      }
+    },
+  })
+
   const handleSubmit = (order: FullOrder, edit: boolean) => {
     if (edit) editOrder(order)
     else createOrder(order)
-  }
-
-  const archiveOrder = () => {
-    console.log("archiveOrder 😃")
   }
 
   if (isLoading) return <LoadingPage />

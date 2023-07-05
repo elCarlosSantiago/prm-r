@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 //TODO: Deal with eslint errors, they do not infer Address from Prisma and the
 //downstream effects are the above errors
+import { idSchema } from "~/schemas"
 import { fullOrderSchema } from "~/schemas/order.schema"
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc"
 import { notFound } from "~/utils"
@@ -22,6 +23,9 @@ export const ordersRouter = createTRPCRouter({
         status: true,
         total: true,
         orderItems: {
+          where: {
+            archivedAt: null,
+          },
           select: {
             id: true,
             quantity: true,
@@ -63,7 +67,6 @@ export const ordersRouter = createTRPCRouter({
   create: privateProcedure
     .input(fullOrderSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log({ input })
       const orderInput = input
       const orderAddress = orderInput.address
       const orderCustomer = orderInput.customer
@@ -96,10 +99,12 @@ export const ordersRouter = createTRPCRouter({
   edit: privateProcedure
     .input(fullOrderSchema)
     .mutation(async ({ ctx, input }) => {
-      //Update function to batch update
+      //TODO: Update function to batch update
       const orderInput = input
       const orderAddress = orderInput.address
       const orderItems = orderInput.orderItems
+      const orderItemsIdsToDelete = orderInput.orderItemsIdsToDelete
+      delete orderInput.orderItemsIdsToDelete
       delete orderInput.address
       delete orderInput.customer
 
@@ -141,6 +146,25 @@ export const ordersRouter = createTRPCRouter({
         })
       }
 
-      return order
+      for (const id of orderItemsIdsToDelete!) {
+        await ctx.prisma.orderItem.update({
+          where: { id },
+          data: {
+            archivedAt: new Date(),
+          },
+        })
+      }
+      return { success: true }
     }),
+
+  archive: privateProcedure.input(idSchema).mutation(async ({ ctx, input }) => {
+    const order = await ctx.prisma.order.update({
+      where: { id: input.id },
+      data: {
+        archivedAt: new Date(),
+      },
+    })
+    if (!order) throw notFound()
+    return order
+  }),
 })
