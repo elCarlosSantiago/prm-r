@@ -140,9 +140,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         orderValues.total = Number((newTotal * 100).toFixed(2))
         const payload = {
           ...orderValues,
-          orderItemsIdsToDelete,
         }
-
+        if (edit) payload.orderItemsIdsToDelete = orderItemsIdsToDelete
         submit(payload, edit)
         close(false)
       })
