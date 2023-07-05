@@ -18,11 +18,6 @@ import {
 } from "@clerk/nextjs/server"
 import { ZodError } from "zod"
 
-/**
- * This will process every request that goes through the endpoint.
- * @see https://trpc.io/docs/context
- */
-
 interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject
 }
