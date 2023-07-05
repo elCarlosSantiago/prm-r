@@ -23,6 +23,9 @@ export const ordersRouter = createTRPCRouter({
         status: true,
         total: true,
         orderItems: {
+          where: {
+            archivedAt: null,
+          },
           select: {
             id: true,
             quantity: true,
@@ -100,6 +103,8 @@ export const ordersRouter = createTRPCRouter({
       const orderInput = input
       const orderAddress = orderInput.address
       const orderItems = orderInput.orderItems
+      const orderItemsIdsToDelete = orderInput.orderItemsIdsToDelete
+      delete orderInput.orderItemsIdsToDelete
       delete orderInput.address
       delete orderInput.customer
 
@@ -141,7 +146,15 @@ export const ordersRouter = createTRPCRouter({
         })
       }
 
-      return order
+      for (const id of orderItemsIdsToDelete!) {
+        await ctx.prisma.orderItem.update({
+          where: { id },
+          data: {
+            archivedAt: new Date(),
+          },
+        })
+      }
+      return { success: true }
     }),
 
   archive: privateProcedure.input(idSchema).mutation(async ({ ctx, input }) => {
