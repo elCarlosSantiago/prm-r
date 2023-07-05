@@ -8,16 +8,16 @@ export const NavBar: React.FC = () => {
 
   if (!isLoaded) return <LoadingPage />
   return (
-    <div className="flex justify-between gap-8 border-b border-slate-400 px-8 py-4">
+    <div className="flex flex-wrap justify-between gap-8 border-b border-slate-400 px-8 py-4">
       {!!user && (
-        <div className="flex items-center gap-8 ">
+        <div className="flex flex-wrap items-center gap-8">
           <Image
             src={user?.profileImageUrl}
             width={32}
             height={32}
             quality={100}
             alt="user-image"
-            className="h-24 w-24 rounded-full"
+            className="hidden rounded-full sm:block sm:h-28 sm:w-28"
           />
           <div className="flex-col gap-16">
             <span>
