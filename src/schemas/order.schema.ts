@@ -54,6 +54,7 @@ export const fullOrderSchema = orderInputSchema
           country: z.string(),
         })
         .optional(),
+      orderItemsIdsToDelete: z.string().array().optional(),
     })
   )
 
