@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 //TODO: Deal with eslint errors, they do not infer Address from Prisma and the
 //downstream effects are the above errors
+import { idSchema } from "~/schemas"
 import { fullOrderSchema } from "~/schemas/order.schema"
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc"
 import { notFound } from "~/utils"
@@ -63,7 +64,6 @@ export const ordersRouter = createTRPCRouter({
   create: privateProcedure
     .input(fullOrderSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log({ input })
       const orderInput = input
       const orderAddress = orderInput.address
       const orderCustomer = orderInput.customer
@@ -143,4 +143,15 @@ export const ordersRouter = createTRPCRouter({
 
       return order
     }),
+
+  archive: privateProcedure.input(idSchema).mutation(async ({ ctx, input }) => {
+    const order = await ctx.prisma.order.update({
+      where: { id: input.id },
+      data: {
+        archivedAt: new Date(),
+      },
+    })
+    if (!order) throw notFound()
+    return order
+  }),
 })
