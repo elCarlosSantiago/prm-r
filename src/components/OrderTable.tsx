@@ -99,7 +99,7 @@ export const OrderTable: React.FC<OrderTableProps> = ({
                         {order.paymentMethod}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        {order.paymentMethod}
+                        {order.trackingCompany}
                       </td>
                     </tr>
                   ))}
