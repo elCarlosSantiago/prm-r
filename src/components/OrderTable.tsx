@@ -79,7 +79,7 @@ export const OrderTable: React.FC<OrderTableProps> = ({
                       }}
                     >
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        {order.createdAt.toLocaleDateString()}
+                        {order?.createdAt?.toLocaleDateString()}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium capitalize text-gray-500 dark:text-white">
                         {order.status}
@@ -91,9 +91,9 @@ export const OrderTable: React.FC<OrderTableProps> = ({
                         {order?.customer?.email}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                        {order.orderItems.length === 1
+                        {order?.orderItems?.length === 1
                           ? order.orderItems?.[0]?.product.name
-                          : `${order.orderItems.length} products`}
+                          : `${order?.orderItems?.length ?? ""} products`}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                         {order.paymentMethod}
