@@ -61,12 +61,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   } = useForm({
     defaultValues: {
       orderItems: orderItemsPricified,
-      status: selectedOrder?.status ?? "PENDING",
+      status: selectedOrder?.status,
       customer: selectedOrder?.customer ?? {},
       id: selectedOrder?.id,
-      paymentMethod: selectedOrder?.paymentMethod ?? "card",
-      trackingCompany: selectedOrder?.trackingCompany ?? "",
-      trackingNumber: selectedOrder?.trackingNumber ?? "",
+      paymentMethod: selectedOrder?.paymentMethod,
+      trackingCompany: selectedOrder?.trackingCompany,
+      trackingNumber: selectedOrder?.trackingNumber,
       address: selectedOrder?.address ?? {},
     },
   })
@@ -162,17 +162,44 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             <Input
               label="Tracking Company"
               placeholder="USPS..."
-              {...(register("trackingCompany"), { required: true })}
+              {...register("trackingCompany", { required: true })}
             />
             <Input
               label="Tracking Number"
               placeholder="#1234567890"
-              {...(register("trackingNumber"), { required: true })}
+              {...register("trackingNumber", { required: true })}
             />
           </div>
           <div className="flex items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
-            <div>Customer Information</div>
-            {selectedOrder?.customer?.email}
+            <span className="text-lg">Customer Information</span>
+            <span>{selectedOrder?.customer?.email}</span>
+          </div>
+          <div className="flex-col items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
+            <span className="text-lg">Shipping Address</span>
+            <div className="flex w-full justify-between">
+              <span>Street</span>
+              <span>{selectedOrder?.address?.line1}</span>
+            </div>
+            <div className="flex w-full justify-between">
+              <span>Apt/House #</span>
+              <span>{selectedOrder?.address?.line2}</span>
+            </div>
+            <div className="flex w-full justify-between">
+              <span>City</span>
+              <span>{selectedOrder?.address?.city}</span>
+            </div>
+            <div className="flex w-full justify-between">
+              <span>State</span>
+              <span>{selectedOrder?.address?.state}</span>
+            </div>
+            <div className="flex w-full justify-between">
+              <span>Country</span>
+              <span>{selectedOrder?.address?.country}</span>
+            </div>
+            <div className="flex w-full justify-between">
+              <span>Zip Code</span>
+              <span>{selectedOrder?.address?.zip}</span>
+            </div>
           </div>
         </div>
       </form>
