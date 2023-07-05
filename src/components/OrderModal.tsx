@@ -2,7 +2,7 @@ import { GenericModal, Input, Select } from "~/components"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useState } from "react"
 import { FullOrder, ProductInput } from "~/schemas"
-import { api } from "~/utils"
+import { api, centsToDollars } from "~/utils"
 
 type OrderModalProps = {
   selectedOrder?: FullOrder
@@ -44,13 +44,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   archiveOrder,
   products,
 }) => {
-  //state
+  //STATE & CONSTS
   const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   const orderItemsPricified = selectedOrder?.orderItems?.map((item) => ({
     ...item,
     price: (item.price ?? 0) / 100,
   }))
-  console.log({ selectedOrder })
+  const oldProductsSubTotal = orderItemsPricified?.reduce((acc, item) => {
+    if (!item?.price) return acc
+    return acc + item.price * item.quantity
+  }, 0)
 
   const {
     register,
@@ -62,27 +65,27 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     defaultValues: {
       orderItems: orderItemsPricified,
       status: selectedOrder?.status,
-      customer: selectedOrder?.customer ?? {},
+      customer: selectedOrder?.customer,
       id: selectedOrder?.id,
       paymentMethod: selectedOrder?.paymentMethod,
       trackingCompany: selectedOrder?.trackingCompany,
       trackingNumber: selectedOrder?.trackingNumber,
-      address: selectedOrder?.address ?? {},
+      address: selectedOrder?.address,
     },
   })
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: orderItemsFields,
+    append: orderItemsAppend,
+    remove: orderItemsRemove,
+  } = useFieldArray({
     control,
     name: "orderItems",
   })
 
-  const selectedProductsTotal = getValues("orderItems")?.reduce((acc, item) => {
-    return acc + item.price * item.quantity
-  }, 0)
-
   const addProduct = () => {
     if (!products?.[0]) return
-    append({
+    orderItemsAppend({
       id: "",
       price: products[0].price / 100,
       quantity: 1,
@@ -92,6 +95,29 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         image: products[0].image,
       },
     })
+  }
+
+  const selectedProductsSubTotal = getValues("orderItems")?.reduce(
+    (acc, item) => {
+      return acc + item.price * item.quantity
+    },
+    0
+  )
+
+  const newTotal = selectedProductsSubTotal //Here we would also add shipping, tax, fees, etc
+
+  const onSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    trigger()
+      .then((isValid) => {
+        if (!isValid) return
+        const orderValues = getValues()
+        console.log({ orderValues })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (
@@ -110,7 +136,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
           <div className="font-medium text-gray-900 dark:text-white">
             {products &&
-              fields.map((item, index) => {
+              orderItemsFields.map((item, index) => {
                 return (
                   <div
                     className="flex w-full items-end justify-between gap-8"
@@ -145,7 +171,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     />
                     <button
                       type="button"
-                      onClick={() => remove(index)}
+                      onClick={() => orderItemsRemove(index)}
                       className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
                     >
                       X
@@ -170,36 +196,152 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               {...register("trackingNumber", { required: true })}
             />
           </div>
-          <div className="flex items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
+          <div className="flex items-center justify-between gap-8 border-b  border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
             <span className="text-lg">Customer Information</span>
             <span>{selectedOrder?.customer?.email}</span>
           </div>
           <div className="flex-col items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
             <span className="text-lg">Shipping Address</span>
-            <div className="flex w-full justify-between">
+            <div className="flex w-full items-center justify-between border-b border-dashed">
               <span>Street</span>
-              <span>{selectedOrder?.address?.line1}</span>
+              <Input
+                size="sm"
+                placeholder="line1"
+                {...register(`address.line1`, {
+                  required: true,
+                })}
+              />
             </div>
-            <div className="flex w-full justify-between">
+            <div className="flex w-full items-center justify-between border-b border-dashed">
               <span>Apt/House #</span>
-              <span>{selectedOrder?.address?.line2}</span>
+              <Input
+                size="sm"
+                placeholder="line2"
+                {...register(`address.line2`, {
+                  required: true,
+                })}
+              />
             </div>
-            <div className="flex w-full justify-between">
+            <div className="flex w-full items-center justify-between border-b border-dashed">
               <span>City</span>
-              <span>{selectedOrder?.address?.city}</span>
+              <Input
+                size="sm"
+                placeholder="City"
+                {...register(`address.city`, {
+                  required: true,
+                })}
+              />
             </div>
-            <div className="flex w-full justify-between">
+            <div className="flex w-full items-center justify-between border-b border-dashed">
               <span>State</span>
-              <span>{selectedOrder?.address?.state}</span>
+              <Input
+                size="sm"
+                placeholder="State"
+                {...register(`address.state`, {
+                  required: true,
+                })}
+              />
             </div>
-            <div className="flex w-full justify-between">
+            <div className="flex w-full items-center justify-between border-b border-dashed">
               <span>Country</span>
-              <span>{selectedOrder?.address?.country}</span>
+              <Input
+                size="sm"
+                placeholder="Country"
+                {...register(`address.country`, {
+                  required: true,
+                })}
+              />
             </div>
-            <div className="flex w-full justify-between">
+            <div className="flex w-full items-center justify-between border-b border-dashed">
               <span>Zip Code</span>
-              <span>{selectedOrder?.address?.zip}</span>
+              <Input
+                size="sm"
+                placeholder="Zip Code"
+                {...register(`address.zip`, {
+                  required: true,
+                })}
+              />
             </div>
+          </div>
+          <div className="flex-col items-center justify-between gap-8 border-b border-gray-400 py-2 text-base font-medium text-gray-900 dark:text-white">
+            <span className="text-lg">Payment Information</span>
+            <div className="flex gap-2">
+              <span>Subtotal:</span>
+              <span>${oldProductsSubTotal}</span>
+            </div>
+            {oldProductsSubTotal !== selectedProductsSubTotal && (
+              <div className="flex gap-2 text-red-500">
+                <span>New Subtotal:</span>
+                <span>${selectedProductsSubTotal}</span>
+              </div>
+            )}
+            <div className="flex gap-2">
+              <span>Order Total:</span>
+              <span>{centsToDollars(selectedOrder?.total ?? 0)}</span>
+            </div>
+            {newTotal !== selectedOrder?.total && (
+              <div className="flex gap-2 text-red-500">
+                <span>New Order Total:</span>
+                <span>${selectedProductsSubTotal}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center justify-between space-x-2 rounded-b  p-6 dark:border-gray-600">
+            <div className="flex gap-4">
+              <button
+                data-modal-hide="defaultModal"
+                type="button"
+                className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={onSubmit}
+              >
+                Submit
+              </button>
+              <button
+                data-modal-hide="defaultModal"
+                type="button"
+                className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  close(false)
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+            {!confirmDelete && edit && (
+              <button
+                data-modal-hide="defaultModal"
+                type="button"
+                className="rounded-lg border border-gray-200 bg-red-300 px-5 py-2.5 text-sm font-medium text-gray-100 hover:bg-red-500 hover:text-white focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+                onClick={() => setConfirmDelete(true)}
+              >
+                Delete
+              </button>
+            )}
+            {confirmDelete && edit && (
+              <div className="flex gap-4">
+                <button
+                  data-modal-hide="defaultModal"
+                  type="button"
+                  className="rounded-lg border border-gray-200 bg-red-300 px-5 py-2.5 text-sm font-medium text-gray-100 hover:bg-red-500 hover:text-white focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+                  // onClick={() => {
+                  //   deleteProduct({ id: selectedProduct?.id ?? "" })
+                  //   close(false)
+                  // }}
+                >
+                  Confirm
+                </button>
+                <button
+                  data-modal-hide="defaultModal"
+                  type="button"
+                  className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+                  onClick={() => setConfirmDelete(false)}
+                >
+                  Undo
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </form>
