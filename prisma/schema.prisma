@@ -83,10 +83,10 @@ model Customer {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    firstName String   @db.VarChar(50)
-    lastName  String   @db.VarChar(50)
+    firstName String?  @db.VarChar(50)
+    lastName  String?  @db.VarChar(50)
     email     String   @unique
-    phone     String   @db.VarChar(20)
+    phone     String?  @db.VarChar(20)
     orders    Order[]  @relation("CustomerOrders")
 }
 
