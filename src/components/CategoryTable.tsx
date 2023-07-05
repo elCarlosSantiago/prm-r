@@ -4,7 +4,7 @@ type Categories = RouterOutputs["categories"]["getAll"]
 
 type CategoryTableProps = {
   categories: Categories
-  setOpenCategoriesModal: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenCategoryModal: React.Dispatch<React.SetStateAction<boolean>>
   setSelectedCategory: React.Dispatch<
     React.SetStateAction<Categories[number] | undefined>
   >
@@ -12,7 +12,7 @@ type CategoryTableProps = {
 
 export const CategoryTable: React.FC<CategoryTableProps> = ({
   categories,
-  setOpenCategoriesModal,
+  setOpenCategoryModal,
   setSelectedCategory,
 }) => {
   if (!categories) return null
@@ -40,7 +40,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                       key={category.id}
                       onClick={() => {
                         setSelectedCategory(category)
-                        setOpenCategoriesModal(true)
+                        setOpenCategoryModal(true)
                       }}
                     >
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
