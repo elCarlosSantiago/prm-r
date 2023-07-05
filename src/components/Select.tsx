@@ -3,12 +3,13 @@ import { type UseFormRegisterReturn } from "react-hook-form"
 
 type SelectProps = {
   label?: string
-  options: { id: string; name: string }[]
+  options: { id?: string; name: string }[]
   register?: UseFormRegisterReturn
+  defaultId?: string
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, options, ...selectProps }, ref) => {
+  ({ label, options, defaultId, ...selectProps }, ref) => {
     return (
       <React.Fragment>
         {label && (
@@ -28,7 +29,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
         >
           {options.map((option, i) => (
-            <option key={`${option.id}-${i}`} value={option.id}>
+            <option
+              key={`${option?.name}-${i}`}
+              value={option.id}
+              {...(defaultId === option.id ? { selected: true } : {})}
+            >
               {option.name}
             </option>
           ))}
