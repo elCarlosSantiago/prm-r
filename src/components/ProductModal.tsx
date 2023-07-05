@@ -3,6 +3,7 @@ import { type Category, type ProductInput, type ProductOutput } from "~/schemas"
 import { useForm } from "react-hook-form"
 import { dollarsToCents } from "~/utils"
 import { useState } from "react"
+import { toast } from "react-hot-toast"
 
 type ProductModalProps = {
   selectedProduct?: ProductOutput
@@ -59,7 +60,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           submit(payload, edit)
           close(false)
         } else {
-          console.log({ errors })
+          const firstValue = Object.entries(errors)[0]
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          toast.error(`${firstValue?.[0]}-${firstValue?.[1].type}`)
         }
       })
       .catch((err) => {
