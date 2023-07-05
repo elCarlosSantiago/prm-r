@@ -89,8 +89,18 @@ export const ProductPage: React.FC = () => {
         />
       )}
       <div className="flex-col gap-12 p-12">
-        <span className="mb-8 flex justify-center">
+        <span className="mb-8 flex justify-center gap-8">
           <h1 className="text-3xl font-bold">Products</h1>
+          <button
+            type="button"
+            className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+            onClick={() => {
+              setSelectedProduct(undefined)
+              setOpenProductModal(true)
+            }}
+          >
+            Add Product
+          </button>
         </span>
         <ProductTable
           {...{ products, setOpenProductModal, setSelectedProduct }}
