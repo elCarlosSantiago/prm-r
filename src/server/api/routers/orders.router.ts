@@ -35,6 +35,18 @@ export const ordersRouter = createTRPCRouter({
         },
         trackingCompany: true,
         paymentMethod: true,
+        trackingNumber: true,
+        address: {
+          select: {
+            id: true,
+            line1: true,
+            line2: true,
+            city: true,
+            state: true,
+            zip: true,
+            country: true,
+          },
+        },
       },
     })
     return orders.map((order) => fullOrderSchema.parse(order))
