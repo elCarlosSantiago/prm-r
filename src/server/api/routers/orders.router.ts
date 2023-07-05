@@ -99,7 +99,7 @@ export const ordersRouter = createTRPCRouter({
   edit: privateProcedure
     .input(fullOrderSchema)
     .mutation(async ({ ctx, input }) => {
-      //Update function to batch update
+      //TODO: Update function to batch update
       const orderInput = input
       const orderAddress = orderInput.address
       const orderItems = orderInput.orderItems
