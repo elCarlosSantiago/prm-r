@@ -12,6 +12,7 @@ type InputProps = {
   disabled?: boolean
   step?: number
   register?: UseFormRegisterReturn //TODO: Fix this
+  className?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -22,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {label && (
             <label
               htmlFor="small-input"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+              className="mb-2 block text-center text-sm font-medium text-gray-900 dark:text-white"
             >
               {label}
             </label>
@@ -39,11 +40,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     if (size === "md") {
       return (
-        <div className="mb-6">
+        <div className="mb-6 min-w-max">
           {label && (
             <label
               htmlFor="base-input"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+              className="mb-2 block text-left text-sm font-medium text-gray-900 dark:text-white"
             >
               {label}
             </label>
@@ -60,7 +61,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     }
 
     return (
-      <div className="mb-6">
+      <div className="mb-6 min-w-max">
         {label && (
           <label
             htmlFor="large-input"
