@@ -25,6 +25,7 @@ model Product {
     // Organization   Organization? @relation(fields: [organizationId], references: [id])
     // organizationId String?
     OrderItem   OrderItem[] @relation("ProductOrderItems")
+    archivedAt  DateTime?   @db.DateTime
 
     @@index([categoryId], name: "categoryId")
 }
@@ -50,6 +51,7 @@ model Order {
     trackingCompany   String
     shippingAddressId String
     customerId        String
+    archivedAt        DateTime?   @db.DateTime
     // paymentIntentId   String if implemented with stripe
     paymentMethod     String
     // Organization      Organization? @relation(fields: [organizationId], references: [id])
