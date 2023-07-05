@@ -6,6 +6,9 @@ export const productsRouter = createTRPCRouter({
   getAll: privateProcedure.query(async ({ ctx }) => {
     //TODO: Paginate products
     const products = await ctx.prisma.product.findMany({
+      where: {
+        archivedAt: null,
+      },
       include: {
         category: {
           select: { name: true },
@@ -16,8 +19,8 @@ export const productsRouter = createTRPCRouter({
   }),
 
   getById: privateProcedure.input(idSchema).query(async ({ ctx, input }) => {
-    const product = await ctx.prisma.product.findUnique({
-      where: { id: input.id },
+    const product = await ctx.prisma.product.findFirst({
+      where: { id: input.id, archivedAt: null },
     })
     if (!product) throw notFound()
     return product
@@ -44,8 +47,9 @@ export const productsRouter = createTRPCRouter({
     }),
 
   delete: privateProcedure.input(idSchema).mutation(async ({ ctx, input }) => {
-    const product = await ctx.prisma.product.delete({
+    const product = await ctx.prisma.product.update({
       where: { id: input.id },
+      data: { archivedAt: new Date() },
     })
     if (!product) throw notFound()
     return product

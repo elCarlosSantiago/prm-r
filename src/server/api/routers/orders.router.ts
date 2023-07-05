@@ -5,6 +5,9 @@ export const ordersRouter = createTRPCRouter({
   //TODO: Paginate orders
   getAll: privateProcedure.query(async ({ ctx }) => {
     const orders = await ctx.prisma.order.findMany({
+      where: {
+        archivedAt: null,
+      },
       select: {
         id: true,
         createdAt: true,
